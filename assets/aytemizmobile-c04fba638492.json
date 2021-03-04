@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "aytemizmobile",
+  "private_key_id": "c04fba638492db992f9d582118bb375ede44fd6e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDhGGu53YwHbNid\nRTYActjCaO33AadV0x/hPMvM3Pb4t+7wXMz4Fzd5mznRnqbDPOi9pHPAYbTrhAYR\nD6825rF8QDVaty9q4xr4FGSjZv3q2kZFE/ed59DKHq+Eb0lwQZlvHhhlhEs8/xXh\navPdwkDTYr4i9mtU9Kf705ugFBOFs2YuZwTBbQ3qkkC6N7Z6L5V3xeGAxrpX6NMT\nLuZ2IlRSnAWIA3auVFtYd20EpR0Ui7xGCBF2qltfi0i8PjhEyzS0c8WwmUKzwEnY\nvL5gVE084R4NPQ4buWb41R5ThKd3N1+0XfavGo5VqAz8WHv1Gap3lp0p88L6W1TC\nEUDdhnnDAgMBAAECggEAHEdJIVc9REw0Wm2w1GrujbNI/K3EgU++GDnfEKRMkqqT\nkLbX4+28FmxIiJZ534VDaAUaVaJGFwsbCAGvGCKbTD90ydTBrEKjx2Qoey7GhOlZ\nx/aI4S7tArd1gsRzDBtG/2K0hexnggjkjXvg7zcm6xI4o4PPBXlHBqgVoQ1koSMl\nnQODmNTQ0NOfDF4jGJdhvwRW7/VL/q35MMp3Bu8Z2HygV2KTKaIkwqKRb+cEDAqP\n7EMtmXkefcTg/wK75zZM6/mrTxIa1S7KN4SxSv6hcVKP7uEY3figaERGC919no+l\ncKQsFuiWn+tnf/HTyY4qxLz8UDVeBETBt75/ZeqFQQKBgQDzQ77e42q+hVsmYimE\no9nPQNEZpVDt+V6epVxHVlnD+8j2SelOCQ5QsiqBn/wAPfeEksGRpUVnHe6IAkLb\n8Hp5dksQbW0+HLJaiY/7pfKo5atEKTq+SA4jwCgkxzvcae/jT5sxJeWK/PX1Icdh\nyXKm53+tkMgiKPM+79dv9rQEaQKBgQDs4StiIruS64Yf8OnvoLHnLoRUI+EM4Lzz\n6wj6XruQOkQr2RABYP5z+Ai4PaKQXjrLfcge1CEBo+LauUkV9Po/NtLJ99dYEO4y\ncKo6LUMy1N4rxA4Cvq+/u162zA9z6BgO+nSExDiyUp8KcRlhnvfDVnio9Ybjzcvl\nApmcB83XSwKBgB0EAptBUvUgoOumH7+jb5Jp78b4Ufvgl6minawgn5phyOmfjUVy\njROQ/MLzWzKIMaLNgmsl5G5VQqNUabckKueb9X4jHzmeYKOt7s+cTqJYqqH5rPkP\nTSh0fhVM8lXrCOL7Fs6473UxkQDJI6gFSDiiOjdwon54lfL21qKTMYupAoGBALtw\n9hZiq5D3pBuUVFkVDJGF4pp+BbBeCcbtvh34Zm0bXiRgT+T3boIvzB6WTxP0LIwn\njPqwGyokF/fB1E52mqr449WDs7hxNTteoaUFef44KVHygq+zWnjaeHkngjbSem8n\nypngd4jMDiOCGXaBB0dgHnx8RO/wQh6GbyzjlAN/AoGBAK7o+e4oFf33URPFJB1J\nlr1g46pmEe4mabrm4aG4F26XN1J50kaQ5Fd9XlJr+In+c7hDKNqoN3vJ//uK/PcT\nRtEzkeFEsp/sAN+NofT6EnlU0hR68NfoA4jODDevDNcimPotuOlkOgXG6YSng1WB\n4tFT0HM8vDX9nXH0DkYOIn9d\n-----END PRIVATE KEY-----\n",
+  "client_email": "aytemiz@aytemizmobile.iam.gserviceaccount.com",
+  "client_id": "107159161422248796061",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/aytemiz%40aytemizmobile.iam.gserviceaccount.com"
+}
