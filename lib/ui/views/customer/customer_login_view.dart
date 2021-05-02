@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:tadayim_bunu/core/models/user/save_customer_command.dart';
 import '../../../core/mixin/validation_mixin.dart';
-import '../../../core/models/user/customer.dart';
 import '../../../core/viewmodels/customer_login_view_model.dart';
 import '../../shared/styles/colors.dart';
 import '../../shared/view_helper/ui_helper.dart';
-import 'customer_signin.dart';
+
+import '../custom_button.dart';
+import 'customer_signup_view.dart';
 import 'forgot_password_view.dart';
 
 import '../baseview.dart';
 
-class CustomerLoginView extends StatefulWidget {
+class CustomerSignInView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => CustomerLoginState();
 }
 
 class CustomerLoginState extends State with ValidationMixin {
-  CustomerLoginViewModel _loginViewModel;
+  CustomerSignInViewModel _loginViewModel;
   final formKey = GlobalKey<FormState>();
-  final custmer = Customer('', '', '', '');
+  final custmer = SaveCustomerCommand('', '', '');
   @override
   Widget build(BuildContext context) {
-    return BaseView<CustomerLoginViewModel>(
+    return BaseView<CustomerSignInViewModel>(
       onModelReady: (model) {
         model.setContext(context);
         _loginViewModel = model;
@@ -62,7 +64,7 @@ class CustomerLoginState extends State with ValidationMixin {
         child: Padding(
           padding: const EdgeInsets.only(top: 0.0),
           child: InkWell(
-            borderRadius: _loginButtonBorderStyle,
+            borderRadius: loginButtonBorderStyle,
             onTap: () {
               if (formKey.currentState.validate()) {
                 formKey.currentState.save();
@@ -70,7 +72,7 @@ class CustomerLoginState extends State with ValidationMixin {
               }
             },
             child: Container(
-              decoration: BoxDecoration(color: Colors.white, borderRadius: _loginButtonBorderStyle),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: loginButtonBorderStyle),
               height: UIHelper.dynamicHeight(200),
               width: UIHelper.dynamicWidth(1000),
               child: Center(
@@ -194,7 +196,7 @@ class CustomerLoginState extends State with ValidationMixin {
               child: FlatButton(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_context) => CustomerAdd()));
+                  Navigator.push(context, MaterialPageRoute(builder: (_context) => CustomerSignUpView()));
                 },
                 child: Text(UIHelper.dontHaveAnAccount, style: TextStyle(fontSize: 15, color: Colors.white)),
               ),
@@ -215,10 +217,10 @@ class CustomerLoginState extends State with ValidationMixin {
         fontSize: UIHelper.dynamicSp(fontSize),
         fontWeight: FontWeight.bold,
       );
-  BorderRadius get _loginButtonBorderStyle => BorderRadius.only(
-        bottomRight: Radius.circular(20),
-        topRight: Radius.circular(20),
-        bottomLeft: Radius.circular(20),
-        topLeft: Radius.circular(20),
-      );
+  // BorderRadius get _loginButtonBorderStyle => BorderRadius.only(
+  //       bottomRight: Radius.circular(20),
+  //       topRight: Radius.circular(20),
+  //       bottomLeft: Radius.circular(20),
+  //       topLeft: Radius.circular(20),
+  //     );
 }

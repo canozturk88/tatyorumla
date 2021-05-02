@@ -65,9 +65,10 @@ class LeftDrawerState extends State<LeftDrawerWidget> {
                       //     context,
                       //     Pages.Home),
 
-                      _buildListTile('Ürün Yorumla', Icons.add_comment, context, SharedManager().token == null ? Pages.Login : Pages.DoNotice,
+                      _buildListTile(
+                          'Ürün Yorumla', Icons.add_comment, context, SharedManager().custmerDetail == null ? Pages.SignIn : Pages.DoNotice,
                           isBagde: _leftDrawerViewModel.sharedManager.notificationCount == 0 ? false : true),
-                      _buildListTile('Yorumlarım', Icons.comment, context, SharedManager().token == null ? Pages.Login : Pages.MyNotice,
+                      _buildListTile('Yorumlarım', Icons.comment, context, SharedManager().custmerDetail == null ? Pages.SignIn : Pages.MyNotice,
                           isBagde: _leftDrawerViewModel.sharedManager.notificationCount == 0 ? false : true),
                       // _buildListTile(
                       //     "Mutlu Haber Vereyim",
@@ -97,22 +98,22 @@ class LeftDrawerState extends State<LeftDrawerWidget> {
                       _buildListTile('Anketler', Icons.question_answer, context, Pages.News),
 
                       Visibility(
-                        visible: SharedManager().token != null,
+                        visible: SharedManager().custmerDetail != null,
                         child: _buildListTile('Hesabım', Icons.account_circle, context, Pages.MyAccount),
                       ),
 
                       Visibility(
-                        visible: SharedManager().token == null,
-                        child: _buildListTile(_leftDrawerViewModel.translate(context, LanguageConstants().login), Icons.login, context, Pages.Login),
+                        visible: SharedManager().custmerDetail == null,
+                        child: _buildListTile(_leftDrawerViewModel.translate(context, LanguageConstants().login), Icons.login, context, Pages.SignIn),
                       ),
 
                       Visibility(
-                        visible: SharedManager().token == null,
-                        child: _buildListTile('Kayit Ol', Icons.account_box, context, Pages.Signin),
+                        visible: SharedManager().custmerDetail == null,
+                        child: _buildListTile('Kayit Ol', Icons.account_box, context, Pages.SignUp),
                       ),
 
                       Visibility(
-                        visible: SharedManager().token != null,
+                        visible: SharedManager().custmerDetail != null,
                         child: _buildListTile('Çıkış Yap', Icons.logout, context, null),
                       ),
 
@@ -200,7 +201,7 @@ class LeftDrawerState extends State<LeftDrawerWidget> {
           child: InkWell(
             onTap: () {
               _leftDrawerViewModel.navigator.pop();
-              _leftDrawerViewModel.navigateLeftMenu(SharedManager().token != null ? Pages.Profile : Pages.Login);
+              _leftDrawerViewModel.navigateLeftMenu(SharedManager().custmerDetail != null ? Pages.MyProfile : Pages.SignIn);
             },
             child: AspectRatio(
               aspectRatio: 1,
@@ -232,7 +233,7 @@ class LeftDrawerState extends State<LeftDrawerWidget> {
         InkWell(
           onTap: () {
             _leftDrawerViewModel.navigator.pop();
-            _leftDrawerViewModel.navigateLeftMenu(SharedManager().token != null ? Pages.Profile : Pages.Login);
+            _leftDrawerViewModel.navigateLeftMenu(SharedManager().custmerDetail != null ? Pages.MyProfile : Pages.SignIn);
           },
           child: Text(
               _leftDrawerViewModel.customerDetail == null

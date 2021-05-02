@@ -1,7 +1,12 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tadayim_bunu/core/models/comment/product_comment.dart';
+import 'package:tadayim_bunu/core/models/home/brand.dart';
+import 'package:tadayim_bunu/core/models/home/product.dart';
+import 'package:tadayim_bunu/core/models/home/main_category.dart';
+import 'package:tadayim_bunu/core/models/home/sub_category.dart';
+import 'package:tadayim_bunu/core/models/user/customer_detail_response.dart';
 import '../enums/shared_data.dart';
-import '../models/user/customer.dart';
 
 class SharedManager {
   /// [factory] init.
@@ -26,10 +31,10 @@ class SharedManager {
 
   // ignore: always_declare_return_types
   logOut() async {
-    await prefs.remove(ClientSharedEnum.loginRequest.toString());
-    await prefs.remove(ClientSharedEnum.userToken.toString());
-    await prefs.remove(ClientSharedEnum.customerDetail.toString());
-    await prefs.remove(ClientSharedEnum.cardList.toString());
+    await prefs.remove(ClientSharedEnum.loginRequestTatYorumla.toString());
+    // await prefs.remove(ClientSharedEnum.userToken.toString());
+    // await prefs.remove(ClientSharedEnum.customerDetail.toString());
+    // await prefs.remove(ClientSharedEnum.cardList.toString());
   }
 
   // ignore: always_declare_return_types
@@ -78,6 +83,78 @@ class SharedManager {
     prefs.setString(ClientSharedEnum.userToken.toString(), token);
   }
 
+//maincategory
+  MainCategoryResponseModel get mainCategoryResponseModel {
+    var mainCategoriesJson = _getFromDisk(ClientSharedEnum.mainCategoriesTatYorumla.toString());
+    if (mainCategoriesJson == null) {
+      return null;
+    }
+
+    return MainCategoryResponseModel.fromJson(json.decode(mainCategoriesJson));
+  }
+
+//
+  set mainCategoryResponseModel(MainCategoryResponseModel mainCategoryResponseModel) {
+    saveStringToDisk(ClientSharedEnum.mainCategoriesTatYorumla.toString(), json.encode(mainCategoryResponseModel.toJson()));
+  }
+
+//sub category
+  SubCategoryResponseModel get subCategoryResponseModel {
+    var subCategoriesJson = _getFromDisk(ClientSharedEnum.subCategoriesTatYorumla.toString());
+    if (subCategoriesJson == null) {
+      return null;
+    }
+
+    return SubCategoryResponseModel.fromJson(json.decode(subCategoriesJson));
+  }
+
+  set subCategoryResponseModel(SubCategoryResponseModel subCategoryResponseModel) {
+    saveStringToDisk(ClientSharedEnum.subCategoriesTatYorumla.toString(), json.encode(subCategoryResponseModel.toJson()));
+  }
+
+//brand
+  BrandResponseModel get brandResponseModel {
+    var brandsJson = _getFromDisk(ClientSharedEnum.brandsTatYorumla.toString());
+    if (brandsJson == null) {
+      return null;
+    }
+
+    return BrandResponseModel.fromJson(json.decode(brandsJson));
+  }
+
+  set brandResponseModel(BrandResponseModel brandResponseModel) {
+    saveStringToDisk(ClientSharedEnum.brandsTatYorumla.toString(), json.encode(brandResponseModel.toJson()));
+  }
+
+//product
+  ProductResponseModel get productResponseModel {
+    var productsJson = _getFromDisk(ClientSharedEnum.productsTatYorumla.toString());
+    if (productsJson == null) {
+      return null;
+    }
+
+    return ProductResponseModel.fromJson(json.decode(productsJson));
+  }
+
+  set productResponseModel(ProductResponseModel productResponseModel) {
+    saveStringToDisk(ClientSharedEnum.productsTatYorumla.toString(), json.encode(productResponseModel.toJson()));
+  }
+
+  //last Product comment
+  ProductCommentResponseModel get lastProducCommentResponseModel {
+    var productsCommentJson = _getFromDisk(ClientSharedEnum.lasProductComment.toString());
+    if (productsCommentJson == null) {
+      return null;
+    }
+
+    return ProductCommentResponseModel.fromJson(json.decode(productsCommentJson));
+  }
+
+  set lastProducCommentResponseModel(ProductCommentResponseModel productCommentResponseModel) {
+    saveStringToDisk(ClientSharedEnum.lasProductComment.toString(), json.encode(productCommentResponseModel.toJson()));
+  }
+
+// open page
   bool get isFirstOpenHomePage => prefs.getBool(ClientSharedEnum.isFirstOpenHomePage.toString()) ?? true;
 
   set isFirstOpenHomePage(bool _val) {
@@ -162,17 +239,17 @@ class SharedManager {
     prefs.setBool(ClientSharedEnum.isVaayOnBoardingShow.toString(), isVaayOnBoardingShow);
   }
 
-  Customer get custmerDetail {
-    var userJson = _getFromDisk(ClientSharedEnum.loginRequest.toString());
+  CustomerResponse get custmerDetail {
+    var userJson = _getFromDisk(ClientSharedEnum.loginRequestTatYorumla.toString());
     if (userJson == 'null' || userJson == null) {
       return null;
     }
 
-    return Customer.fromJson(json.decode(userJson));
+    return CustomerResponse.fromJson(json.decode(userJson));
   }
 
-  set custmerDetail(Customer loginRequest) {
-    saveStringToDisk(ClientSharedEnum.loginRequest.toString(), json.encode(loginRequest.toJson(loginRequest)));
+  set custmerDetail(CustomerResponse loginRequest) {
+    saveStringToDisk(ClientSharedEnum.loginRequestTatYorumla.toString(), json.encode(loginRequest.toJson(loginRequest)));
   }
 
   // LoginRequest get loginRequest {

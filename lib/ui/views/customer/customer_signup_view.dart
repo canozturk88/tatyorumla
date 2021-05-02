@@ -1,52 +1,60 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tadayim_bunu/core/models/user/save_customer_command.dart';
+import 'package:tadayim_bunu/core/viewmodels/customer_signup_view_model.dart';
 import '../../../core/mixin/validation_mixin.dart';
-import '../../../core/models/user/customer.dart';
 import '../../shared/styles/colors.dart';
 import '../../shared/view_helper/ui_helper.dart';
-import 'customer_login_view.dart';
+import '../baseview.dart';
 
-class CustomerAdd extends StatefulWidget {
+class CustomerSignUpView extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => CustomerAddState();
+  State<StatefulWidget> createState() => CustomerSignUpViewState();
 }
 
-class CustomerAddState extends State with ValidationMixin {
+class CustomerSignUpViewState extends State with ValidationMixin {
+  CustomerSignupViewModel _customerSignupViewModel;
   final formKey = GlobalKey<FormState>();
-  final customer = Customer('', '', '', '');
+  final customer = SaveCustomerCommand('', '', '');
   bool isKvkk = false;
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance.init(context);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-      ),
-      backgroundColor: mainColor,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _helloText,
-                _description,
-                _formField,
-                _signup,
-                _getkvkk(),
-                link(),
-                _loginButton,
-              ],
+    return BaseView<CustomerSignupViewModel>(
+      onModelReady: (model) {
+        model.setContext(context);
+        _customerSignupViewModel = model;
+      },
+      builder: (context, model, child) {
+        return Scaffold(
+          key: _customerSignupViewModel.customerSignupScaffoldKey,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+          ),
+          backgroundColor: mainColor,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _helloText,
+                    _description,
+                    _formField,
+                    _signup,
+                    _getkvkk(),
+                    link(),
+                    _loginButton,
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -59,7 +67,7 @@ class CustomerAddState extends State with ValidationMixin {
               child: FlatButton(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_context) => CustomerLoginView()));
+                  Navigator.push(context, MaterialPageRoute(builder: (_context) => CustomerSignUpView()));
                 },
                 child: Text(UIHelper.haveAnAccount, style: TextStyle(fontSize: 15, color: Colors.white)),
               ),
@@ -192,8 +200,8 @@ class CustomerAddState extends State with ValidationMixin {
             if (formKey.currentState.validate()) {
               if (isKvkk) {
                 formKey.currentState.save();
-                customer.isKvkk = true;
-                saveCustomer(customer);
+                customer.userStatus = 5;
+                _customerSignupViewModel.saveCustomer(customer);
               } else {
                 _showDialogkVkk('Kvkk Onaylamaniz Gerekmektedir', true);
               }
@@ -296,35 +304,6 @@ class CustomerAddState extends State with ValidationMixin {
         topLeft: Radius.circular(20),
       );
 
-  Future<void> saveCustomer(Customer customer) async {
-    var isConncet = false;
-
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile) {
-      isConncet = true;
-    } else if (connectivityResult == ConnectivityResult.wifi) {
-      isConncet = true;
-    }
-    if (isConncet) {
-      // AccountApiServices.createUser(user).then((response) {
-      //   setState(() {
-      //     if (response.statusCode == 201) {
-
-      //       _showDialog(
-      //           "Kayıdınız alındı. Lütfen mail adresinize gelen e-postayı onaylayınız.",
-      //           true);
-      //     } else {
-      //       _showDialog(
-      //           "Aynı mail adresi veya telefon numarasına ait kayıt vardır.",
-      //           true);
-      //     }
-      //   });
-      // });
-    } else {
-      _showDialog('Lütfen internet bağlantınızı kontrol ediniz.', false);
-    }
-  }
-
   void _showDialogKvkk() {
     showDialog(
       context: context,
@@ -380,29 +359,29 @@ class CustomerAddState extends State with ValidationMixin {
     );
   }
 
-  void _showDialog(String contextText, bool isuscces) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Bildiri'),
-          content: Text(contextText),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            FlatButton(
-              child: Text('Kapat'),
-              onPressed: () {
-                if (isuscces) {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pushNamed('/customerLogin');
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // void _showDialog(String contextText, bool isuscces) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text('Bildiri'),
+  //         content: Text(contextText),
+  //         actions: <Widget>[
+  //           // usually buttons at the bottom of the dialog
+  //           FlatButton(
+  //             child: Text('Kapat'),
+  //             onPressed: () {
+  //               if (isuscces) {
+  //                 Navigator.of(context).pop();
+  //                 Navigator.of(context).pushNamed('/customerLogin');
+  //               }
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  //}
 
   void _showDialogkVkk(String contextText, bool isuscces) {
     showDialog(

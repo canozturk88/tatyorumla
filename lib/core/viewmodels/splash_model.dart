@@ -1,8 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tadayim_bunu/core/apis/catalog/catalog_api.dart';
+import 'package:tadayim_bunu/core/apis/productComment/product_comment_api.dart';
 // import 'package:logger/logger.dart';
 // import 'package:preference/pref_manager.dart';
 import 'package:tadayim_bunu/core/enums/page_named.dart';
+import 'package:tadayim_bunu/core/models/comment/product_comment.dart';
+import 'package:tadayim_bunu/core/models/home/brand.dart';
+import 'package:tadayim_bunu/core/models/home/product.dart';
+import 'package:tadayim_bunu/core/models/home/main_category.dart';
+import 'package:tadayim_bunu/core/models/home/sub_category.dart';
 import 'package:tadayim_bunu/core/services/shared_prefernces_api.dart';
 import 'package:tadayim_bunu/core/viewmodels/base_model.dart';
 
@@ -38,6 +47,47 @@ class SplashViewModel extends BaseModel {
   }
 
   Future login() async {
+//----ggetMostCity
+    await CatalogApiServices.getAllMainCategory().then((response) {
+      if (response.statusCode == 200) {
+        var map = jsonDecode(response.body);
+        var responseMainCategory = MainCategoryResponseModel.fromJson(map);
+        _sharedManager.mainCategoryResponseModel = responseMainCategory;
+      }
+    });
+
+    await CatalogApiServices.getAllSubCategory().then((response) {
+      if (response.statusCode == 200) {
+        var map = jsonDecode(response.body);
+        var responseSubCategory = SubCategoryResponseModel.fromJson(map);
+        _sharedManager.subCategoryResponseModel = responseSubCategory;
+      }
+    });
+
+    await CatalogApiServices.getAllBrands().then((response) {
+      if (response.statusCode == 200) {
+        var map = jsonDecode(response.body);
+        var responseBRands = BrandResponseModel.fromJson(map);
+        _sharedManager.brandResponseModel = responseBRands;
+      }
+    });
+
+    await CatalogApiServices.getAllProducts().then((response) {
+      if (response.statusCode == 200) {
+        var map = jsonDecode(response.body);
+        var responseProduct = ProductResponseModel.fromJson(map);
+        _sharedManager.productResponseModel = responseProduct;
+      }
+    });
+
+    await ProductCommentApiServices.getLastTenProductComments().then((response) {
+      if (response.statusCode == 200) {
+        var map = jsonDecode(response.body);
+        var responseProductComment = ProductCommentResponseModel.fromJson(map);
+        _sharedManager.lastProducCommentResponseModel = responseProductComment;
+      }
+    });
+
     // if (_sharedManager.loginRequest != null && _sharedManager.token != null) {
     //   var loginResponse = await _apiService.loginUser(
     //       loginRequest: _sharedManager.loginRequest);

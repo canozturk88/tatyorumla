@@ -11,7 +11,7 @@ import 'core/services/shared_prefernces_api.dart';
 import 'locator.dart';
 import 'ui/shared/language/app_language.dart';
 
-String get baseUrl => 'http://api.bildireyimbunu.com/';
+String get baseUrl => 'http://4128afce0549.ngrok.io/';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   notificationConfig();

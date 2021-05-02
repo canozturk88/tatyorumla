@@ -1,48 +1,65 @@
 import 'package:networking/networking/serializable_object.dart';
 
-class Brand extends SerializableObject<Brand> {
-  String id;
-  String subCategoryId;
-  String title;
-  String description;
-  String subDescription;
-  String detail;
-  String bannerImageUrl;
-  String fullImageUrl;
-  String startDate;
-  String endDate;
-  String targetUrl;
-  int targetType;
-  int targetTypeId;
-  bool isAnyCampaignCode;
-  bool isSentCampaignCode;
-  String lastParticipationDate;
-  String remainingDayCounter;
-  String itemTitle;
+class BrandResponseModel implements SerializableObject<BrandResponseModel> {
+  int responseCode;
+  String responseDescription;
+  List<Brand> brands;
 
-  Brand({
-    this.id,
-    this.title,
-    this.bannerImageUrl,
-  });
+  BrandResponseModel({this.responseCode, this.responseDescription, this.brands});
 
-  Brand.fromJson(Map<String, dynamic> json) {
-    id = json['Id'];
-    title = json['Title'];
-    subCategoryId = json['SubCategoryId'];
+  BrandResponseModel.fromJson(Map<String, dynamic> json) {
+    responseCode = json['ResponseCode'];
+    responseDescription = json['ResponseDescription'];
+    if (json['Brands'] != null) {
+      brands = <Brand>[];
+      json['Brands'].forEach((v) {
+        brands.add(Brand.fromJson(v));
+      });
+    }
   }
 
   @override
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['Id'] = id;
-    data['Title'] = title;
-    data['SubCategoryId'] = subCategoryId;
+    data['ResponseCode'] = responseCode;
+    data['ResponseDescription'] = responseDescription;
+    if (brands != null) {
+      data['Brands'] = brands.map((v) => v.toJson(v)).toList();
+    }
     return data;
   }
 
   @override
-  Brand fromJson(Map<String, dynamic> json) {
-    return Brand.fromJson(json);
+  BrandResponseModel fromJson(Map<String, dynamic> json) {
+    return BrandResponseModel.fromJson(json);
+  }
+}
+
+class Brand {
+  String id;
+  String brandName;
+  String brandPoint;
+  String subCategory;
+
+  Brand({
+    this.id,
+    this.brandName,
+    this.subCategory,
+  });
+
+  Brand.fromJson(Map<String, dynamic> json) {
+    id = json['Id'];
+    brandName = json['BrandName'];
+    brandPoint = json['BrandPoint'].toString();
+    subCategory = json['SubCategory'];
+  }
+
+  Map<String, dynamic> toJson(Brand brand) {
+    final data = <String, dynamic>{};
+    data['Id'] = brand.id;
+    data['BrandName'] = brand.brandName;
+    data['BrandPoint'] = brand.brandPoint;
+    data['SubCategory'] = brand.subCategory;
+    return data;
   }
 }

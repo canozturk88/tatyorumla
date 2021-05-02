@@ -1,76 +1,83 @@
-import 'package:http/http.dart' as http;
+import 'package:tadayim_bunu/core/models/user/save_customer_command.dart';
+import 'package:tadayim_bunu/core/viewmodels/customer_signup_view_model.dart';
 
 import '../../../main.dart';
-import '../../models/user/customer.dart';
-import '../../services/shared_prefernces_api.dart';
 
-//String get base_url => Platform.environment['DEV_URL'].toString();
-//String get baseUrl => "https://api.bildireyimbunu.com/";
-//String get baseUrl => "http://192.168.1.60/BilireyimBunu.WebApi/";
+import 'package:http/http.dart' as http;
 
 class AccountApiServices {
-// final String base_url = Platform.environment['DEV_URL'];
-
-  //String urls= 'http://192.168.1.10/BilireyimBunu.WebApi/';
-
-  static Future<http.Response> createUser(Customer customer) async {
-    var headers = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer  ' + SharedManager().jwtToken};
-
-    final response = await http.post(baseUrl + 'user', headers: headers, body: postToJsonUser(customer));
+  static Future<http.Response> createUser(SaveCustomerCommand customerLoginViewModel) async {
+    var headers = <String, String>{'Content-Type': 'application/json'};
+    final response = await http.post(baseUrl + 'Customer/CreateCustomer', headers: headers, body: postToJsonUser(customerLoginViewModel));
     return response;
   }
 
-  static Future<http.Response> sendMail(Customer customer) async {
-    var headers = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer  ' + SharedManager().jwtToken};
+  // static Future<http.Response> sendMail(Customer customer) async {
+  //   final response = await http.post(baseUrl + 'user', headers: CoreHelper.getHeaderWithJwtToken(), body: postToJsonUser(user));
+  //   return response;
+  // }
 
-    final response = await http.post(baseUrl + 'user', headers: headers, body: postToJsonUser(customer));
-    return response;
-  }
-
-  static Future<http.Response> loginUser(String email, String password) async {
-    var headers = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer  ' + SharedManager().jwtToken};
+  static Future<http.Response> loginCustomer(String mailAddress, String password) async {
     final response = await http.get(
-      baseUrl + 'user/GetUserLogin/$email/$password',
-      headers: headers,
+      baseUrl + 'Customer/GetCustomerLogin/$mailAddress/$password',
+      //headers: CoreHelper.getHeaderWithNotUserToken(),
     );
     return response;
   }
 
-  static Future<http.Response> changePassword(String userId, String oldPassword, String newPassword) async {
-    var headers = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer  ' + SharedManager().jwtToken};
+  static Future<http.Response> getCustomerById(String id) async {
     final response = await http.get(
-      baseUrl + 'user/changePassword/$userId/$oldPassword/$newPassword',
-      headers: headers,
+      baseUrl + 'Customer/GetCustomer/$id',
+      // headers: CoreHelper.getHeaderWithNotUserToken(),
     );
     return response;
   }
 
-  static Future<http.Response> updateUser(Customer userIn) async {
-    var headers = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer  ' + SharedManager().jwtToken};
-    final response = await http.put(baseUrl + 'user', headers: headers, body: postToJsonUser(userIn));
+  static Future<http.Response> changePassword(int id, String oldPassword, String newPassword) async {
+    final response = await http.put(
+      baseUrl + 'Customer/ChangePassword/$id/$oldPassword/$newPassword',
+      // headers: CoreHelper.getHeaderWithJwtToken(),
+    );
     return response;
   }
 
-  static Future<http.Response> successUser(String id) async {
-    var headers = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer  ' + SharedManager().jwtToken};
-    final response = await http.put(baseUrl + 'User/UpdateUserSuccess/' + id, headers: headers);
+  static Future<http.Response> changeMailAddress(int id, String password, String newEmail) async {
+    final response = await http.put(
+      baseUrl + 'Customer/ChangeEmail/$id/$password/$newEmail',
+      // headers: CoreHelper.getHeaderWithJwtToken(),
+    );
     return response;
   }
 
-  static Future<http.Response> renewPassword(String userId, String newPassword) async {
-    var headers = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer  ' + SharedManager().jwtToken};
-    final response = await http.get(
-      baseUrl + 'user/renewPassword/$userId/$newPassword',
-      headers: headers,
+  static Future<http.Response> updateUser(CustomerSignupViewModel userIn) async {
+    final response = await http.put(
+      baseUrl + 'user',
+      //headers: CoreHelper.getHeaderWithJwtToken(),
+      //  body: postToJsonUser(userIn)
+    );
+    return response;
+  }
+
+  static Future<http.Response> successUser(int id) async {
+    final response = await http.put(
+      baseUrl + 'Customer/UpdateUserSuccess/$id',
+      // headers: CoreHelper.getHeaderWithJwtToken()
+    );
+    return response;
+  }
+
+  static Future<http.Response> renewPassword(int id, String newPassword) async {
+    final response = await http.put(
+      baseUrl + 'Customer/RenewPassword/$id/$newPassword',
+      //headers: CoreHelper.getHeaderWithNotUserToken(),
     );
     return response;
   }
 
   static Future<http.Response> forgotPassword(String email) async {
-    var headers = <String, String>{'Content-Type': 'application/json', 'Authorization': 'Bearer  ' + SharedManager().jwtToken};
     final response = await http.get(
-      baseUrl + 'user/forgotPassword/$email',
-      headers: headers,
+      baseUrl + 'Customer/ForgotPassword/$email',
+      // headers: CoreHelper.getHeaderWithNotUserToken(),
     );
     return response;
   }

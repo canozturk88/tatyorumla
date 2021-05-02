@@ -87,7 +87,7 @@ class _WriteCommentViewState extends State<WriteCommentView> {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: <Widget>[
-                      for (var item in _homeViewModel.homeData.subcategory.where((element) => element.mainCategoryId == mainCategoryId))
+                      for (var item in _homeViewModel.homeData.subcategory.where((element) => element.mainCategory == mainCategoryId))
                         getsubCategory(item),
                     ],
                   ),
@@ -103,7 +103,7 @@ class _WriteCommentViewState extends State<WriteCommentView> {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: <Widget>[
-                      for (var item in _homeViewModel.homeData.brand.where((element) => element.subCategoryId == subCategoryId)) getBrand(item),
+                      for (var item in _homeViewModel.homeData.brand.where((element) => element.subCategory == subCategoryId)) getBrand(item),
                     ],
                   ),
                 ),
@@ -121,9 +121,9 @@ class _WriteCommentViewState extends State<WriteCommentView> {
                       if (product)
                         for (var i = 0; i < 1; i++)
                           getProduct(
-                              _homeViewModel.homeData.product.where((element) => element.brandId == selectBrandId).toList()[i],
-                              _homeViewModel.homeData.product.where((element) => element.brandId == selectBrandId).toList()[i + 1],
-                              _homeViewModel.homeData.product.where((element) => element.brandId == selectBrandId).toList()[i + 2])
+                              _homeViewModel.homeData.product.where((element) => element.brand == selectBrandId).toList()[i],
+                              _homeViewModel.homeData.product.where((element) => element.brand == selectBrandId).toList()[i + 1],
+                              _homeViewModel.homeData.product.where((element) => element.brand == selectBrandId).toList()[i + 2])
                     ],
                   ),
                 ),
@@ -181,7 +181,7 @@ class _WriteCommentViewState extends State<WriteCommentView> {
         },
         child: Container(
           child: Text(
-            subCategory.title,
+            subCategory.subCategoryName,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0, color: mainColor),
           ),
           margin: EdgeInsets.all(10.0),
@@ -196,7 +196,7 @@ class _WriteCommentViewState extends State<WriteCommentView> {
             product = true;
             selectBrandId = brand.id;
 
-            var totalcount = _homeViewModel.homeData.product.where((element) => element.brandId == selectBrandId).length;
+            var totalcount = _homeViewModel.homeData.product.where((element) => element.brand == selectBrandId).length;
 
             if (totalcount % 3 == 0) {
               selectProductCount = totalcount ~/ 3;
@@ -207,7 +207,7 @@ class _WriteCommentViewState extends State<WriteCommentView> {
         },
         child: Container(
           child: Text(
-            brand.title,
+            brand.brandName,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0, color: mainColor),
           ),
           margin: EdgeInsets.all(10.0),

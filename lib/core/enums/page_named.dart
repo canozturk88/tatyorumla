@@ -1,18 +1,21 @@
 enum Pages {
-  Login,
-  Signin,
+  SignIn,
+  SignUp,
   Logout,
   Splash,
   Home,
   Onboarding,
-  Profile,
+  MyProfile,
   DoNotice,
   MyNotice,
   News,
-  AddHapptNews,
+  AddNewComment,
   MyHappyNews,
   NoticeMap,
-  AllNotice,
+  ChangePassword,
+  ChangeMailAddress,
   MyAccount,
-  ProductDetail
+  ProductDetail,
+  CommentatorProfile,
+  FilterPage
 }

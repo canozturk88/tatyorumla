@@ -52,7 +52,7 @@ class _BadgeMenuViewState extends State<BadgeMenuView> {
             : IconButton(
                 icon: Icon(
                   Icons.menu,
-                  size: UIHelper.dynamicHeight(48),
+                  size: UIHelper.dynamicHeight(96),
                 ),
                 onPressed: () {
                   widget.onPress();

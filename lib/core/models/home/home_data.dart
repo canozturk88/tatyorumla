@@ -30,7 +30,7 @@ class HomeData extends SerializableObject<HomeData> {
     if (json['Brand'] != null) {
       brand = <Brand>[];
       json['Brand'].forEach((v) {
-        brand.add(Brand().fromJson(v));
+        brand.add(Brand.fromJson(v));
       });
     }
 
@@ -55,19 +55,19 @@ class HomeData extends SerializableObject<HomeData> {
     final data = <String, dynamic>{};
 
     if (mainCategory != null) {
-      data['MainCategory'] = mainCategory.map((v) => v.toJson()).toList();
+      data['MainCategory'] = mainCategory.map((v) => v.toJson(v)).toList();
     }
 
     if (subcategory != null) {
-      data['SubCategory'] = subcategory.map((v) => v.toJson()).toList();
+      data['SubCategory'] = subcategory.map((v) => v.toJson(v)).toList();
     }
 
     if (brand != null) {
-      data['Brand'] = brand.map((v) => v.toJson()).toList();
+      data['Brand'] = brand.map((v) => v.toJson(v)).toList();
     }
 
     if (product != null) {
-      data['Product'] = product.map((v) => v.toJson()).toList();
+      data['Product'] = product.map((v) => v.toJson(v)).toList();
     }
 
     if (banners != null) {

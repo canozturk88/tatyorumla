@@ -1,55 +1,63 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../core/apis/account/account_api.dart';
+import 'package:tadayim_bunu/core/models/user/save_customer_command.dart';
+import 'package:tadayim_bunu/core/viewmodels/renew_password_view_model.dart';
 import '../../../core/mixin/validation_mixin.dart';
-import '../../../core/models/user/customer.dart';
 import '../../shared/styles/colors.dart';
 import '../../shared/view_helper/ui_helper.dart';
-import 'customer_login_view.dart';
+import '../baseview.dart';
 
-class RenewPassword extends StatefulWidget {
-  final Customer customer;
-  RenewPassword(this.customer);
-
-  static const String routeName = '/renewPassword';
+class RenewPasswordView extends StatefulWidget {
+  final SaveCustomerCommand customer;
+  RenewPasswordView(this.customer);
 
   @override
   State<StatefulWidget> createState() => RenewPasswordState(customer);
 }
 
 class RenewPasswordState extends State with ValidationMixin {
-  Customer customer;
+  RenewPasswordViewModel renewPasswordViewModel;
+  SaveCustomerCommand customer;
   RenewPasswordState(this.customer);
+
   final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance.init(context);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-      ),
-      backgroundColor: mainColor,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _helloText,
-                _description,
-                _formField,
-                _loginButton,
-              ],
+    return BaseView<RenewPasswordViewModel>(
+      onModelReady: (model) {
+        model.setContext(context);
+        renewPasswordViewModel = model;
+      },
+      builder: (context, model, child) {
+        return Scaffold(
+          key: renewPasswordViewModel.renewPasswordScaffoldKey,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+          ),
+          backgroundColor: UIHelper.PEAR_PRIMARY_COLOR,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _helloText,
+                    _description,
+                    _formField,
+                    _loginButton,
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -109,7 +117,7 @@ class RenewPasswordState extends State with ValidationMixin {
           onTap: () {
             if (formKey.currentState.validate()) {
               formKey.currentState.save();
-              saveNewPassword(customer);
+              renewPasswordViewModel.saveNewPassword(customer.password);
             }
           },
           child: Container(
@@ -150,52 +158,4 @@ class RenewPasswordState extends State with ValidationMixin {
         bottomLeft: Radius.circular(20),
         topLeft: Radius.circular(20),
       );
-
-  Future<void> saveNewPassword(Customer customer) async {
-    var isConncet = false;
-
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile) {
-      isConncet = true;
-    } else if (connectivityResult == ConnectivityResult.wifi) {
-      isConncet = true;
-    }
-    if (isConncet) {
-      await AccountApiServices.renewPassword(customer.id, customer.password).then((response) {
-        setState(() {
-          if (response.statusCode == 200) {
-            // Map userMap = jsonDecode(response.body);
-            // var userLogin = User.fromJson(userMap);
-            _showDialog('Şifreniz Değişmiştir. Giriş yapabilirsiniz.', true);
-          } else {
-            _showDialog('E-posta adresine ait kullanıcı bulunamadı.', false);
-          }
-        });
-      });
-    } else {
-      _showDialog('Lütfen internet bağlantınızı kontrol ediniz.', false);
-    }
-  }
-
-  void _showDialog(String contextText, bool ischange) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Bildiri'),
-          content: Text(contextText),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Kapat'),
-              onPressed: () {
-                if (ischange) {
-                  Navigator.push(context, MaterialPageRoute(builder: (_context) => CustomerLoginView()));
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 }

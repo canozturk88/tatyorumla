@@ -11,6 +11,7 @@ class UIHelper {
   static final String name = 'Name';
   static final String hello = 'Merhaba';
   static final String email = 'E-posta';
+  static final String newemail = 'Yeni E-posta';
   static final String nameSurname = 'Ad Soyad';
   static final String username = 'Username';
   static final String password = 'Şifre';
@@ -59,7 +60,9 @@ class UIHelper {
   static const double ONBOARD_PAGE_COUNT = 4;
   static const int ONBOARD_NEXT_DURATION = 1000;
 
-  // static const Color PEAR_PRIMARY_COLOR = Color(0xFF4873FF);
+  static const Color PEAR_PRIMARY_COLOR = Color.fromRGBO(198, 83, 198, 1);
+
+  static const Color WHITE = Colors.white;
 
   static double dynamicHeight(double val) => ScreenUtil.instance.setHeight(val);
 

@@ -1,47 +1,62 @@
 import 'package:networking/networking/serializable_object.dart';
 
-class MainCategory extends SerializableObject<MainCategory> {
-  String id;
-  String title;
-  String description;
-  String subDescription;
-  String detail;
-  String bannerImageUrl;
-  String fullImageUrl;
-  String startDate;
-  String endDate;
-  String targetUrl;
-  int targetType;
-  int targetTypeId;
-  bool isAnyCampaignCode;
-  bool isSentCampaignCode;
-  String lastParticipationDate;
-  String remainingDayCounter;
-  String itemTitle;
+class MainCategoryResponseModel implements SerializableObject<MainCategoryResponseModel> {
+  int responseCode;
+  String responseDescription;
+  List<MainCategory> mainCategories;
 
-  MainCategory({
-    this.id,
-    this.title,
-    this.bannerImageUrl,
-  });
+  MainCategoryResponseModel({this.responseCode, this.responseDescription, this.mainCategories});
 
-  MainCategory.fromJson(Map<String, dynamic> json) {
-    id = json['Id'];
-    title = json['Title'];
-    bannerImageUrl = json['BannerImageUrl'];
+  MainCategoryResponseModel.fromJson(Map<String, dynamic> json) {
+    responseCode = json['ResponseCode'];
+    responseDescription = json['ResponseDescription'];
+    if (json['MainCategories'] != null) {
+      mainCategories = <MainCategory>[];
+      json['MainCategories'].forEach((v) {
+        mainCategories.add(MainCategory.fromJson(v));
+      });
+    }
   }
 
   @override
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['Id'] = id;
-    data['Title'] = title;
-    data['BannerImageUrl'] = bannerImageUrl;
+    data['ResponseCode'] = responseCode;
+    data['ResponseDescription'] = responseDescription;
+    if (mainCategories != null) {
+      data['MainCategories'] = mainCategories.map((v) => v.toJson(v)).toList();
+    }
     return data;
   }
 
   @override
-  MainCategory fromJson(Map<String, dynamic> json) {
-    return MainCategory.fromJson(json);
+  MainCategoryResponseModel fromJson(Map<String, dynamic> json) {
+    return MainCategoryResponseModel.fromJson(json);
+  }
+}
+
+class MainCategory {
+  String id;
+  String categoryName;
+  String bannerImageUrl;
+
+  MainCategory({
+    this.id,
+    this.categoryName,
+    this.bannerImageUrl,
+  });
+
+  MainCategory.fromJson(Map<String, dynamic> json) {
+    id = json['Id'];
+    categoryName = json['CategoryName'];
+    bannerImageUrl = json['BannerImageUrl'];
+  }
+
+  Map<String, dynamic> toJson(MainCategory mainCategory) {
+    final data = <String, dynamic>{};
+    data['Id'] = mainCategory.id;
+    data['CategoryName'] = mainCategory.categoryName;
+    data['BannerImageUrl'] = mainCategory.bannerImageUrl;
+    return data;
   }
 }

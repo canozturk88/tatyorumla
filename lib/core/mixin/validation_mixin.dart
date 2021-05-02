@@ -41,6 +41,13 @@ class ValidationMixin {
     return null;
   }
 
+  String validateTitle(String value) {
+    if (value.length < 10) {
+      return 'Başlık en az 5 karekter olmalı';
+    }
+    return null;
+  }
+
   String validatePhone(String value) {
     if (value.length != 10) {
       return 'Numara 10 hane olmalı';

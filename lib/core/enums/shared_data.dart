@@ -6,7 +6,7 @@ enum ClientSharedEnum {
   refreshToken,
   firstLogin,
   deviceToken,
-  loginRequest,
+  loginRequestTatYorumla,
   customerDetail,
   selectedVehicleType,
   selectedFuelType,
@@ -41,4 +41,9 @@ enum ClientSharedEnum {
   faq,
   cities,
   plates,
+  mainCategoriesTatYorumla,
+  subCategoriesTatYorumla,
+  brandsTatYorumla,
+  productsTatYorumla,
+  lasProductComment
 }

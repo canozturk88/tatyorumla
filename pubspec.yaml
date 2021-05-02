@@ -40,6 +40,10 @@ dependencies:
   cached_network_image: ^2.5.0
   flutter_widget_from_html: ^0.3.2+2
   pedantic: ^1.9.2
+  rating_bar: ^0.2.0
+  percent_indicator: ^2.1.7+2
+  autocomplete_textfield: ^1.7.3
+  image_picker: ^0.6.7+22
 
   networking:
     git:

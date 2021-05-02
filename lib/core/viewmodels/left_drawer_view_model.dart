@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tadayim_bunu/core/models/user/customer_detail_response.dart';
 import '../enums/page_named.dart';
 import '../enums/viewstate.dart';
-import '../models/user/customer.dart';
 import '../services/shared_prefernces_api.dart';
 import 'base_model.dart';
 
@@ -11,7 +11,7 @@ class LeftDrawerViewModel extends BaseModel with WidgetsBindingObserver {
 
   BuildContext get context => _context;
 
-  Customer customerDetail;
+  CustomerResponse customerDetail;
 
   VoidCallback onChangeTokenStatusModel;
   VoidCallback returnMain;
@@ -52,7 +52,7 @@ class LeftDrawerViewModel extends BaseModel with WidgetsBindingObserver {
   // ignore: always_declare_return_types
   logout() async {
     onChangeTokenStatusModel();
-    sharedManager.removeNotifications();
+    // sharedManager.removeNotifications();
     customerDetail = null;
     setState(ViewState.Busy);
     sharedManager.logOut();

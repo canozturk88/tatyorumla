@@ -1,48 +1,62 @@
 import 'package:networking/networking/serializable_object.dart';
 
-class SubCategory extends SerializableObject<SubCategory> {
-  String id;
-  String mainCategoryId;
-  String title;
-  String description;
-  String subDescription;
-  String detail;
-  String bannerImageUrl;
-  String fullImageUrl;
-  String startDate;
-  String endDate;
-  String targetUrl;
-  int targetType;
-  int targetTypeId;
-  bool isAnyCampaignCode;
-  bool isSentCampaignCode;
-  String lastParticipationDate;
-  String remainingDayCounter;
-  String itemTitle;
+class SubCategoryResponseModel implements SerializableObject<SubCategoryResponseModel> {
+  int responseCode;
+  String responseDescription;
+  List<SubCategory> subCategories;
 
-  SubCategory({
-    this.id,
-    this.title,
-    this.bannerImageUrl,
-  });
+  SubCategoryResponseModel({this.responseCode, this.responseDescription, this.subCategories});
 
-  SubCategory.fromJson(Map<String, dynamic> json) {
-    id = json['Id'];
-    title = json['Title'];
-    mainCategoryId = json['MainCategoryId'];
+  SubCategoryResponseModel.fromJson(Map<String, dynamic> json) {
+    responseCode = json['ResponseCode'];
+    responseDescription = json['ResponseDescription'];
+    if (json['SubCategories'] != null) {
+      subCategories = <SubCategory>[];
+      json['SubCategories'].forEach((v) {
+        subCategories.add(SubCategory.fromJson(v));
+      });
+    }
   }
 
   @override
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['Id'] = id;
-    data['Title'] = title;
-    data['MainCategoryId'] = mainCategoryId;
+    data['ResponseCode'] = responseCode;
+    data['ResponseDescription'] = responseDescription;
+    if (subCategories != null) {
+      data['SubCategories'] = subCategories.map((v) => v.toJson(v)).toList();
+    }
     return data;
   }
 
   @override
-  SubCategory fromJson(Map<String, dynamic> json) {
-    return SubCategory.fromJson(json);
+  SubCategoryResponseModel fromJson(Map<String, dynamic> json) {
+    return SubCategoryResponseModel.fromJson(json);
+  }
+}
+
+class SubCategory {
+  String id;
+  String subCategoryName;
+  String mainCategory;
+
+  SubCategory({
+    this.id,
+    this.subCategoryName,
+    this.mainCategory,
+  });
+
+  SubCategory.fromJson(Map<String, dynamic> json) {
+    id = json['Id'];
+    subCategoryName = json['SubCategoryName'];
+    mainCategory = json['MainCategory'];
+  }
+
+  Map<String, dynamic> toJson(SubCategory subCategory) {
+    final data = <String, dynamic>{};
+    data['Id'] = subCategory.id;
+    data['SubCategoryName'] = subCategory.subCategoryName;
+    data['MainCategory'] = subCategory.mainCategory;
+    return data;
   }
 }

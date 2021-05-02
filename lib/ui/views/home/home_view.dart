@@ -2,13 +2,10 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../core/models/home/brand.dart';
-import '../../../core/models/home/main_category.dart';
-import '../../../core/models/home/product.dart';
-import '../../../core/models/home/sub_category.dart';
-import '../../../core/services/shared_prefernces_api.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:rating_bar/rating_bar.dart';
+import 'package:tadayim_bunu/core/services/shared_prefernces_api.dart';
 import '../../../core/viewmodels/home_view_model.dart';
-import '../../../main.dart';
 import '../../shared/language/language_constants.dart';
 import '../../shared/styles/colors.dart';
 import '../../shared/view_helper/ui_helper.dart';
@@ -22,11 +19,11 @@ import '../../widgets/header_item_widget.dart';
 class HomeView extends StatefulWidget {
   HomeViewModel homeViewModel;
 
-  Function goToNoticeList;
-  Function goToMapNoticeView;
-  Function goToDoNotice;
+  Function goToProductCommentList;
+  Function goToProductList;
+  Function goToDoComment;
 
-  HomeView({Key key, this.homeViewModel, this.goToNoticeList, this.goToMapNoticeView, this.goToDoNotice}) : super(key: key);
+  HomeView({Key key, this.homeViewModel, this.goToProductCommentList, this.goToDoComment, this.goToProductList}) : super(key: key);
 
   @override
   _HomeViewState createState() => _HomeViewState();
@@ -83,6 +80,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
 
   Widget _buildMainContent() {
     return NestedScrollView(
+        key: UniqueKey(),
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
@@ -99,107 +97,235 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                 padding: EdgeInsets.all(10),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8),
-                  child: Image.asset(
-                    'assets/icons/appicon.png',
-                    scale: 5,
-                  ),
+                  // child: Image.asset(
+                  //   'assets/icons/appicon.png',
+                  //   scale: 5,
+                  // ),
                 ),
               ),
               flexibleSpace: FlexibleSpaceBar(collapseMode: CollapseMode.parallax, background: _buildBannerContent),
             ),
           ];
         },
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      '',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10.0, color: Colors.blueGrey),
+        body: Container(
+            child: ListView.builder(
+                padding: EdgeInsets.all(2.0),
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
+                    width: double.maxFinite,
+                    child: Card(
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 10,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+                                  child: InkWell(
+                                    onTap: () async {
+                                      await _homeViewModel.gotoProductDetail(_homeViewModel.productComments[index].productName);
+                                    },
+                                    child: RichText(
+                                      text: TextSpan(
+                                          style: TextStyle(color: mainColor, fontSize: 15.0, fontWeight: FontWeight.bold),
+                                          children: [TextSpan(text: _homeViewModel.productComments[index].productName)]),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 10,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+                                  child: RichText(
+                                    text: TextSpan(
+                                        style: TextStyle(color: mainColor, fontSize: 14.0),
+                                        children: [TextSpan(text: _homeViewModel.productComments[index].title)]),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 10,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+                                  child: RichText(
+                                    text: TextSpan(
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12.0,
+                                        ),
+                                        children: [TextSpan(text: _homeViewModel.productComments[index].comment)]),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 10,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      _homeViewModel.gotoCommentatorNavigate(_homeViewModel.productComments[index].customerId);
+                                    },
+                                    child: RichText(
+                                      text: TextSpan(
+                                          style: TextStyle(color: mainColor, fontSize: 15.0, fontWeight: FontWeight.bold),
+                                          children: [TextSpan(text: _homeViewModel.productComments[index].customerNameSurName)]),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 5,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+                                  child: RichText(
+                                    text: TextSpan(style: TextStyle(color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.bold), children: [
+                                      TextSpan(text: 'FİYAT / PERFORMANS: ' + _homeViewModel.productComments[index].pricePerformance.toString())
+                                    ]),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 5,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 0),
+                                  child: RatingBar.readOnly(
+                                    initialRating: double.parse(_homeViewModel.productComments[index].pricePerformance.toString()),
+                                    isHalfAllowed: true,
+                                    halfFilledIcon: Icons.star_half,
+                                    filledIcon: Icons.star,
+                                    emptyIcon: Icons.star_border,
+                                    size: 24,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+                                    child: CircularPercentIndicator(
+                                      radius: 40.0,
+                                      lineWidth: 4.0,
+                                      percent: double.parse(((_homeViewModel.productComments[index].tastePoint / 10) * 2).toString()),
+                                      header: Text('Lezzet'),
+                                      center: Icon(
+                                        Icons.food_bank,
+                                        size: 20.0,
+                                        color: Colors.blue,
+                                      ),
+                                      backgroundColor: Colors.grey,
+                                      progressColor: Colors.blue,
+                                    )),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
+                                    child: CircularPercentIndicator(
+                                      radius: 40.0,
+                                      lineWidth: 4.0,
+                                      percent: double.parse(((_homeViewModel.productComments[index].pricePoint / 10) * 2).toString()),
+                                      header: Text('Fiyat '),
+                                      center: Icon(
+                                        Icons.money,
+                                        size: 20.0,
+                                        color: Colors.blue,
+                                      ),
+                                      backgroundColor: Colors.grey,
+                                      progressColor: Colors.blue,
+                                    )),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
+                                  child: CircularPercentIndicator(
+                                    radius: 40.0,
+                                    lineWidth: 4.0,
+                                    percent: double.parse(((_homeViewModel.productComments[index].packingPoint / 10) * 2).toString()),
+                                    header: Text('Ambalaj'),
+                                    center: Icon(
+                                      Icons.ac_unit,
+                                      size: 20.0,
+                                      color: Colors.blue,
+                                    ),
+                                    backgroundColor: Colors.grey,
+                                    progressColor: Colors.blue,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
+                                  child: CircularPercentIndicator(
+                                    radius: 40.0,
+                                    lineWidth: 4.0,
+                                    percent: double.parse(((_homeViewModel.productComments[index].accessPoint / 10) * 2).toString()),
+                                    header: Text('Erisim'),
+                                    center: Icon(
+                                      Icons.find_in_page,
+                                      size: 20.0,
+                                      color: Colors.blue,
+                                    ),
+                                    backgroundColor: Colors.grey,
+                                    progressColor: Colors.blue,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 40, 10, 0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      if (SharedManager().custmerDetail != null) {
+                                        _homeViewModel.addNewCommentNavigate(_homeViewModel.productComments[index]);
+                                      } else {
+                                        _homeViewModel.goToLogin();
+                                      }
+                                    },
+                                    child: Text(
+                                      'Yorumla',
+                                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey, fontSize: 14.0),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ),
-              Container(
-                height: UIHelper.dynamicHeight(192),
-                padding: EdgeInsets.only(left: 10),
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: <Widget>[
-                    for (var item in _homeViewModel.homeData.mainCategory) getMainCategoryImage(item),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      '',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10.0, color: Colors.blueGrey),
-                    ),
-                  ],
-                ),
-              ),
-              Visibility(
-                child: Container(
-                  height: UIHelper.dynamicHeight(100),
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: <Widget>[
-                      for (var item in _homeViewModel.homeData.subcategory.where((element) => element.mainCategoryId == mainCategoryId))
-                        getsubCategory(item),
-                    ],
-                  ),
-                ),
-                visible: subcategory,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true,
-              ),
-              Visibility(
-                child: Container(
-                  height: UIHelper.dynamicHeight(100),
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: <Widget>[
-                      for (var item in _homeViewModel.homeData.brand.where((element) => element.subCategoryId == subCategoryId)) getBrand(item),
-                    ],
-                  ),
-                ),
-                visible: brand,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true,
-              ),
-              Visibility(
-                child: Container(
-                  height: UIHelper.dynamicHeight(400),
-                  child: ListView(
-                    scrollDirection: Axis.vertical,
-                    children: <Widget>[
-                      if (product)
-                        for (var i = 0; i < 1; i++)
-                          getProduct(
-                              _homeViewModel.homeData.product.where((element) => element.brandId == selectBrandId).toList()[i],
-                              _homeViewModel.homeData.product.where((element) => element.brandId == selectBrandId).toList()[i + 1],
-                              _homeViewModel.homeData.product.where((element) => element.brandId == selectBrandId).toList()[i + 2])
-                    ],
-                  ),
-                ),
-                visible: product,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true,
-              ),
-            ],
-          ),
-        ));
+                  );
+                })));
   }
 
   Widget get _buildBannerContent {
@@ -279,17 +405,10 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                 ],
               ),
             ),
-            //_buildHeaderContainer,
           ],
         )
       ],
     );
-  }
-
-  void getLocationData() {
-    if (SharedManager().custmerDetail == null) {
-      _getCurrentLocation;
-    }
   }
 
   Widget _buildBannerItem(int itemIndex) {
@@ -325,291 +444,71 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     );
   }
 
-  Widget getProduct(Product product1, Product product2, Product product3) {
-    return Row(
-      children: [
-        Expanded(
-          // flex: 3,
-          child: Container(
-            margin: EdgeInsets.all(2.0),
-            width: UIHelper.dynamicHeight(192),
-            height: UIHelper.dynamicHeight(192),
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(baseUrl + 'UploadFile/' + product1.bannerImageUrl + '.jpg'),
-                  fit: BoxFit.cover,
-                ),
-                border: Border.all(
-                  color: mainColor,
-                  width: 1,
-                ),
-                // borderRadius: BorderRadius.circular(12),
-                borderRadius: BorderRadius.circular(12.0)),
-          ),
-        ),
-        Expanded(
-          // flex: 3,
-          child: Container(
-            margin: EdgeInsets.all(2.0),
-            width: UIHelper.dynamicHeight(192),
-            height: UIHelper.dynamicHeight(192),
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(baseUrl + 'UploadFile/' + product2.bannerImageUrl + '.jpg'),
-                  fit: BoxFit.cover,
-                ),
-                border: Border.all(
-                  color: mainColor,
-                  width: 1,
-                ),
-                // borderRadius: BorderRadius.circular(12),
-                borderRadius: BorderRadius.circular(12.0)),
-          ),
-        ),
-        Expanded(
-          // flex: 3,
-          child: Container(
-            margin: EdgeInsets.all(2.0),
-            width: UIHelper.dynamicHeight(192),
-            height: UIHelper.dynamicHeight(192),
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(baseUrl + 'UploadFile/' + product3.bannerImageUrl + '.jpg'),
-                  fit: BoxFit.cover,
-                ),
-                border: Border.all(
-                  color: mainColor,
-                  width: 1,
-                ),
-                // borderRadius: BorderRadius.circular(12),
-                borderRadius: BorderRadius.circular(12.0)),
-          ),
-        ),
-      ],
-    );
-  }
+  // InkWell getMainCategoryImage(MainCategory mainCategory) {
+  //   return InkWell(
+  //       onTap: () {
+  //         setState(() {
+  //           subcategory = true;
+  //           brand = false;
+  //           product = false;
+  //           mainCategoryId = mainCategory.id;
+  //           subCategoryId = '0';
+  //           selectBrandId = '0';
+  //           selectProductId = '0';
+  //         });
+  //       },
+  //       child: Container(
+  //         margin: EdgeInsets.all(2.0),
+  //         width: UIHelper.dynamicHeight(192),
+  //         decoration: BoxDecoration(
+  //             image: DecorationImage(
+  //               image: NetworkImage('https://api.bildireyimbunu.com/UploadFile/' + mainCategory.bannerImageUrl + '.jpg'),
+  //               fit: BoxFit.cover,
+  //             ),
+  //             border: Border.all(
+  //               color: mainColor,
+  //               width: 1,
+  //             ),
+  //             // borderRadius: BorderRadius.circular(12),
+  //             borderRadius: BorderRadius.circular(12.0)),
+  //       ));
+  // }
 
-  InkWell getMainCategoryImage(MainCategory mainCategory) {
-    return InkWell(
-        onTap: () {
-          setState(() {
-            subcategory = true;
-            brand = false;
-            product = false;
-            mainCategoryId = mainCategory.id;
-            subCategoryId = '0';
-            selectBrandId = '0';
-            selectProductId = '0';
-          });
-        },
-        child: Container(
-          margin: EdgeInsets.all(2.0),
-          width: UIHelper.dynamicHeight(192),
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(baseUrl + 'UploadFile/' + mainCategory.bannerImageUrl + '.jpg'),
-                fit: BoxFit.cover,
-              ),
-              border: Border.all(
-                color: mainColor,
-                width: 1,
-              ),
-              // borderRadius: BorderRadius.circular(12),
-              borderRadius: BorderRadius.circular(12.0)),
-        ));
-  }
+  // InkWell getsubCategory(SubCategory subCategory) {
+  //   return InkWell(
+  //       onTap: () {
+  //         setState(() {
+  //           brand = true;
+  //           subCategoryId = subCategory.id;
+  //           product = false;
+  //           selectProductId = '0';
+  //         });
+  //       },
+  //       child: Container(
+  //         child: Text(
+  //           subCategory.subCategoryName,
+  //           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0, color: mainColor),
+  //         ),
+  //         margin: EdgeInsets.all(10.0),
+  //       ));
+  // }
 
-  InkWell getsubCategory(SubCategory subCategory) {
-    return InkWell(
-        onTap: () {
-          setState(() {
-            brand = true;
-            subCategoryId = subCategory.id;
-            product = false;
-            selectProductId = '0';
-          });
-        },
-        child: Container(
-          child: Text(
-            subCategory.title,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0, color: mainColor),
-          ),
-          margin: EdgeInsets.all(10.0),
-        ));
-  }
+  // InkWell getBrand(Brand brand) {
+  //   return InkWell(
+  //       onTap: () {
+  //         // product = true;
+  //         setState(() {
+  //           product = true;
+  //           selectBrandId = brand.id;
+  //         });
+  //       },
+  //       child: Container(
+  //         child: Text(
+  //           brand.brandName,
+  //           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0, color: mainColor),
+  //         ),
+  //         margin: EdgeInsets.all(10.0),
+  //       ));
+  // }
 
-  InkWell getBrand(Brand brand) {
-    return InkWell(
-        onTap: () {
-          product = true;
-          setState(() {
-            product = true;
-            selectBrandId = brand.id;
-
-            var totalcount = _homeViewModel.homeData.product.where((element) => element.brandId == selectBrandId).length;
-
-            if (totalcount % 3 == 0) {
-              selectProductCount = totalcount ~/ 3;
-            } else {
-              selectProductCount = (totalcount ~/ 3) + 1;
-            }
-          });
-        },
-        child: Container(
-          child: Text(
-            brand.title,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0, color: mainColor),
-          ),
-          margin: EdgeInsets.all(10.0),
-        ));
-  }
-
-  // ignore: missing_return
-  Future<String> get _getCurrentLocation async {
-    // Position position = await Geolocator()
-    //     .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    // List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(
-    //     double.parse(position.latitude.toStringAsFixed(7)),
-    //     double.parse(position.longitude.toStringAsFixed(7)));
-
-    // SharedManager().homeLocation.lat = position.latitude;
-    // SharedManager().homeLocation.lng = position.longitude;
-
-    // HomeLocationModel aa = new HomeLocationModel();
-    // aa.lat = position.latitude;
-    // aa.lng = position.longitude;
-
-    // _sharedManager.homeLocation = HomeLocationModel(
-    //     lat: position.latitude, lng: position.longitude, city: "");
-    // setData(
-    //     lat: position.latitude,
-    //     lng: position.longitude);
-
-    // Placemark place = placemark[0];
-    // controllerCity.text = place.administrativeArea.toString();
-    // controllerDisctirct.text = place.subAdministrativeArea.toString();
-    // controllerNeighborhood.text = place.subLocality.toString();
-    // controllerStreet.text = place.thoroughfare.toString();
-    // controllerStreetNo.text = place.subThoroughfare.toString();
-
-    // if (controllerCity.text != "") {
-    //   setState(() {
-    //     isVisible = true;
-    //   });
-    // }
-    // controllerSubStreet.text = place.thoroughfare.toString();
-  }
-}
-
-InkWell getItem(img) {
-  return InkWell(
-      child: Container(
-    margin: EdgeInsets.all(2.0),
-    width: 150.0,
-    decoration: BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage(baseUrl + 'UploadFile/' + img + '.jpg'),
-          fit: BoxFit.cover,
-        ),
-        borderRadius: BorderRadius.circular(10.0)),
-  ));
-}
-
-Padding getSmallItem(count, name, flavor) {
-  return Padding(
-    padding: EdgeInsets.all(16.0),
-    child: Card(
-      child: Row(
-        children: <Widget>[
-          SizedBox(width: 10.0),
-          Expanded(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                '$name',
-                style: TextStyle(fontSize: 20.0, color: Colors.blueGrey, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 5.0),
-              Text(
-                '$flavor',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 14.0,
-                ),
-              )
-            ],
-          )),
-          Column(
-            children: <Widget>[
-              Icon(
-                Icons.upgrade_sharp,
-                color: Colors.grey,
-              ),
-              // Text(
-              //   "$time min",
-              //   style: TextStyle(
-              //       fontSize: 14.0,
-              //       color: Colors.grey,
-              //       fontWeight: FontWeight.bold),
-              // )
-            ],
-          ),
-          SizedBox(width: 20.0),
-          ClipPath(
-            clipper: MyClip2(),
-            child: Container(
-              width: 70.0,
-              height: 70.0,
-              color: Color(0xff1f2226),
-              child: Center(
-                child: Text(
-                  '$count',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22.0, color: Colors.white),
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
-    ),
-  );
-}
-
-class MyClip extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    var path = Path();
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height - 60.0);
-    path.quadraticBezierTo(size.width - 70.0, size.height, size.width / 2, size.height - 20);
-    path.quadraticBezierTo(size.width / 3.0, size.height - 32, 0, size.height);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return true;
-  }
-}
-
-class MyClip2 extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    var path = Path();
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
-    path.quadraticBezierTo(10, size.height / 2 + 20, 5, size.height / 2);
-    path.quadraticBezierTo(0, size.height / 3, 10, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return true;
-  }
 }

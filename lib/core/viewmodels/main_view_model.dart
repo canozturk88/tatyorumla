@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tadayim_bunu/core/services/shared_prefernces_api.dart';
+import 'package:tadayim_bunu/ui/views/home/write_comment.dart';
+import 'package:tadayim_bunu/ui/views/product/product_comment_view.dart';
+import 'package:tadayim_bunu/ui/views/product/product_search_view.dart';
 import 'base_model.dart';
 import '../../ui/views/home/home_view.dart';
 import '../../ui/views/left_drawer_widget.dart';
@@ -11,14 +15,9 @@ class MainViewModel extends BaseModel {
 
   static GlobalKey<ScaffoldState> mainScaffoldKey = GlobalKey();
 
-  // ApiServices _apiService;
-  // CampaignRequestModel campaignRequestModel;
-  // SharedManager _sharedManager = new SharedManager();
-
-  // Campaigns campaignDetail;
-  // List<News> news = new List();
-  // News newsDetail;
-
+  ProductCommentView productCommentView;
+  ProductSearchView productSearchView;
+  WriteCommentView writeCommentView;
   HomeView homeView;
   // CreditView creditView;
   int currentIndex = 0;
@@ -26,18 +25,15 @@ class MainViewModel extends BaseModel {
   // NotificationListRequestModel notificationListRequestModel =
   //     new NotificationListRequestModel();
 
-  List<Widget> bottomBarChildren = [
-    // StationsView(),
-    // AnnouncementView(),
-  ];
+  List<Widget> bottomBarChildren = [ProductCommentView(), ProductSearchView(), WriteCommentView()];
 
-  void goToCampaignList() {
-    currentIndex = 2;
+  void goToProductCommentList() {
+    currentIndex = 1;
     notifyListeners();
   }
 
-  void goToStationView() {
-    currentIndex = 1;
+  void goToProductList() {
+    currentIndex = 3;
     notifyListeners();
   }
 
@@ -46,18 +42,29 @@ class MainViewModel extends BaseModel {
     // campaignRequestModel = new CampaignRequestModel();
 
     homeView = HomeView(
-        // goToCampaignList: goToCampaignList,
-        // goToStationView: goToStationView,
-        );
+      goToProductCommentList: goToProductCommentList,
+      goToProductList: goToProductList,
+    );
 
-    //creditView = CreditView();
+    productCommentView = ProductCommentView();
+    writeCommentView = WriteCommentView();
+    productSearchView = ProductSearchView();
     bottomBarChildren.insert(0, homeView);
-    // bottomBarChildren.insert(3, creditView);
+    if (SharedManager().jwtToken != null) {
+      bottomBarChildren.insert(2, productCommentView);
+    } else {
+      bottomBarChildren.insert(2, productCommentView);
+    }
+
+    bottomBarChildren.insert(4, productCommentView);
+
     leftDrawerWidget = LeftDrawerWidget(
       onChangeTokenStatus: () {
         //TODO başka sayfadaysa burayı kapat
         if (currentIndex == 0) {
-          homeView.homeViewModel.getHomeData();
+          if (homeView.homeViewModel != null) {
+            homeView.homeViewModel.getHomeData();
+          }
         } else if (currentIndex == 3) {
           //   creditView.creditViewModel.notifyListeners();
         }
