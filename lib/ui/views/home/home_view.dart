@@ -1,84 +1,65 @@
-import 'dart:async';
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:rating_bar/rating_bar.dart';
-import 'package:tadayim_bunu/core/services/shared_prefernces_api.dart';
+import 'package:tadayim_bunu/core/core_helper.dart';
+import 'package:tadayim_bunu/core/enums/page_named.dart';
+import 'package:tadayim_bunu/core/models/comment/product_comment.dart';
+import 'package:tadayim_bunu/router/router.gr.dart';
+import 'package:tadayim_bunu/ui/views/customer/commentator_profile_wiew.dart';
+import 'package:tadayim_bunu/ui/views/like/commend_like_view.dart';
 import '../../../core/viewmodels/home_view_model.dart';
-import '../../shared/language/language_constants.dart';
 import '../../shared/styles/colors.dart';
 import '../../shared/view_helper/ui_helper.dart';
-import '../baseview.dart';
 import '../../widgets/badge_menu.dart';
 import '../../widgets/dots_decarator.dart';
 import '../../widgets/dots_indicator.dart';
 import '../../widgets/header_item_widget.dart';
 
 // ignore: must_be_immutable
-class HomeView extends StatefulWidget {
-  HomeViewModel homeViewModel;
+class HomePage extends ConsumerWidget {
+  const HomePage({Key? key}) : super(key: key);
 
-  Function goToProductCommentList;
-  Function goToProductList;
-  Function goToDoComment;
+  final double _radius = 40.0;
+  final double _lineWidth = 5.0;
 
-  HomeView({Key key, this.homeViewModel, this.goToProductCommentList, this.goToDoComment, this.goToProductList}) : super(key: key);
-
-  @override
-  _HomeViewState createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
-  Future _future;
-  HomeViewModel _homeViewModel;
-  bool subcategory = false;
-  bool brand = false;
-  bool product = false;
-  String mainCategoryId = '0';
-  String subCategoryId = '0';
-  String selectBrandId = '0';
-  String selectProductId = '0';
-  int selectProductCount = 0;
+  //final _appRouter = AppRouter();
 
   @override
-  Widget build(BuildContext context) {
-    return BaseView<HomeViewModel>(
-      onModelReady: (model) {
-        model.setContext(context);
-        _homeViewModel = model;
-        widget.homeViewModel = model;
-        _future = _homeViewModel.getHomeData();
-      },
-      builder: (context, model, child) {
-        return FutureBuilder(
-          future: _future,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              _homeViewModel.setHomeDataShared();
-              return _buildMainContent();
-            } else if (snapshot.hasError) {
-              return Container(
-                  color: Colors.white,
-                  child: Center(
-                      child: Padding(
-                    padding: EdgeInsets.all(UIHelper.dynamicHeight(30)),
-                    child: Text(
-                      _homeViewModel.translate(context, LanguageConstants.of(context).errorText),
-                      style: TextStyle(fontSize: UIHelper.dynamicScaleSp(44)),
-                      textAlign: TextAlign.center,
-                    ),
-                  )));
-            } else {
-              return _buildMainContent();
-            }
-          },
-        );
+  Widget build(BuildContext context, ScopedReader watch) {
+    final homeViewModel = watch(homeViewProvider);
+
+    return FutureBuilder(
+      // future: _future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          homeViewModel.setHomeDataShared();
+          return _buildMainContent(homeViewModel);
+        } else if (snapshot.hasError) {
+          return Container(
+              color: Colors.white,
+              child: Center(
+                  child: Padding(
+                padding: EdgeInsets.all(UIHelper.dynamicHeight(30)),
+                child: Text(
+                  'Hata',
+                  style: TextStyle(fontSize: UIHelper.dynamicScaleSp(44)),
+                  textAlign: TextAlign.center,
+                ),
+              )));
+        } else {
+          return _buildMainContent(homeViewModel);
+        }
       },
     );
+    //   },
+    // );
   }
 
-  Widget _buildMainContent() {
+  Widget _buildMainContent(HomeViewModel homeViewModel) {
     return NestedScrollView(
         key: UniqueKey(),
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -86,10 +67,10 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
             SliverAppBar(
               leading: BadgeMenuView(
                 onPress: () {
-                  _homeViewModel.openLeftDrawer();
+                  homeViewModel.openLeftDrawer();
                 },
               ),
-              expandedHeight: UIHelper.dynamicHeight(850),
+              expandedHeight: UIHelper.dynamicHeight(600),
               floating: true,
               pinned: true,
               centerTitle: true,
@@ -97,238 +78,337 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                 padding: EdgeInsets.all(10),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8),
-                  // child: Image.asset(
-                  //   'assets/icons/appicon.png',
-                  //   scale: 5,
-                  // ),
                 ),
               ),
-              flexibleSpace: FlexibleSpaceBar(collapseMode: CollapseMode.parallax, background: _buildBannerContent),
+              flexibleSpace: FlexibleSpaceBar(collapseMode: CollapseMode.parallax, background: _buildBannerContent(homeViewModel)),
             ),
           ];
         },
-        body: Container(
-            child: ListView.builder(
-                padding: EdgeInsets.all(2.0),
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
-                    width: double.maxFinite,
-                    child: Card(
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 10,
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
-                                  child: InkWell(
-                                    onTap: () async {
-                                      await _homeViewModel.gotoProductDetail(_homeViewModel.productComments[index].productName);
-                                    },
-                                    child: RichText(
-                                      text: TextSpan(
-                                          style: TextStyle(color: mainColor, fontSize: 15.0, fontWeight: FontWeight.bold),
-                                          children: [TextSpan(text: _homeViewModel.productComments[index].productName)]),
+        body: StreamBuilder(
+            stream: homeViewModel.streamProductComment,
+            builder: (BuildContext context, AsyncSnapshot<List<ProductComment>> snapshot) {
+              if (!snapshot.hasData) {
+                return CircularProgressIndicator();
+              }
+              return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  padding: EdgeInsets.all(2.0),
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
+                      width: double.maxFinite,
+                      child: Card(
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(0, 1, 1, 1),
+                                      child: CircleAvatar(
+                                        radius: 12,
+                                        backgroundImage: AssetImage('assets/images/default_user_image.png'),
+                                        backgroundColor: Colors.grey,
+                                      )),
+                                ),
+
+                                Expanded(
+                                  flex: 5,
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        context.pushRoute(ProductSearchRoute());
+                                        //   homeViewModel.gotoCommentatorNavigate(snapshot.data![index].customerId!);
+                                      },
+                                      child: RichText(
+                                        text: TextSpan(style: TextStyle(color: mainColor, fontSize: 15.0), children: [
+                                          TextSpan(style: TextStyle(fontWeight: FontWeight.bold), text: snapshot.data![index].customerNameSurName),
+                                          TextSpan(style: TextStyle(color: Colors.grey, fontSize: 12.0), text: ' @'),
+                                          TextSpan(
+                                              style: TextStyle(color: Colors.grey[700], fontSize: 12.0),
+                                              text: snapshot.data![index].customerNameSurName)
+                                        ]),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 10,
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
-                                  child: RichText(
-                                    text: TextSpan(
-                                        style: TextStyle(color: mainColor, fontSize: 14.0),
-                                        children: [TextSpan(text: _homeViewModel.productComments[index].title)]),
+                                Expanded(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(5, 0, 1, 0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        context.pushRoute(ProductSearchRoute());
+                                        // homeViewModel.gotoCommentatorNavigate(snapshot.data![index].customerId!);
+                                      },
+                                      child: RichText(
+                                        text: TextSpan(
+                                            style: TextStyle(color: Colors.grey, fontSize: 10.0, fontWeight: FontWeight.bold),
+                                            children: [TextSpan(text: CoreHelper.calculatepassedTime(snapshot.data![index].createdDate!))]),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 5),
-                          Row(
-                            children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(5, 1, 1, 0),
+                                    child: _iconLabelButtonModal(snapshot.data![index], context),
+                                  ),
+                                ),
+
+                                // Expanded(
+                                //   flex: 3,
+                                //   child: Padding(
+                                //     padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
+                                //     child: InkWell(
+                                //       onTap: () {
+                                //         context.pushRoute(ProductSearchRoute());
+                                //         // homeViewModel.gotoCommentatorNavigate(snapshot.data![index].customerId!);
+                                //       },
+                                //       child: RichText(
+                                //         text: TextSpan(
+                                //             style: TextStyle(color: mainColor, fontSize: 10.0, fontWeight: FontWeight.bold),
+                                //             children: [TextSpan(text: 'Tekrar Almam')]),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+                              ],
+                            ),
+                            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                               Expanded(
-                                flex: 10,
+                                flex: 8,
                                 child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
-                                  child: RichText(
-                                    text: TextSpan(
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 12.0,
+                                  padding: const EdgeInsets.fromLTRB(0, 1, 1, 5),
+                                  child: Column(children: [
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          flex: 10,
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+                                            child: InkWell(
+                                              onTap: () async {
+                                                //   await _homeViewModel.gotoProductDetail(_snapshot.data[index].product);
+                                              },
+                                              child: RichText(
+                                                text: TextSpan(
+                                                    style: TextStyle(color: Colors.black, fontSize: 15.0, fontWeight: FontWeight.bold),
+                                                    children: [TextSpan(text: snapshot.data![index].productName)]),
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        children: [TextSpan(text: _homeViewModel.productComments[index].comment)]),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 10,
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      _homeViewModel.gotoCommentatorNavigate(_homeViewModel.productComments[index].customerId);
-                                    },
-                                    child: RichText(
-                                      text: TextSpan(
-                                          style: TextStyle(color: mainColor, fontSize: 15.0, fontWeight: FontWeight.bold),
-                                          children: [TextSpan(text: _homeViewModel.productComments[index].customerNameSurName)]),
+                                      ],
                                     ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 5,
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
-                                  child: RichText(
-                                    text: TextSpan(style: TextStyle(color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.bold), children: [
-                                      TextSpan(text: 'FİYAT / PERFORMANS: ' + _homeViewModel.productComments[index].pricePerformance.toString())
-                                    ]),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 5,
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 0),
-                                  child: RatingBar.readOnly(
-                                    initialRating: double.parse(_homeViewModel.productComments[index].pricePerformance.toString()),
-                                    isHalfAllowed: true,
-                                    halfFilledIcon: Icons.star_half,
-                                    filledIcon: Icons.star,
-                                    emptyIcon: Icons.star_border,
-                                    size: 24,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
-                                    child: CircularPercentIndicator(
-                                      radius: 40.0,
-                                      lineWidth: 4.0,
-                                      percent: double.parse(((_homeViewModel.productComments[index].tastePoint / 10) * 2).toString()),
-                                      header: Text('Lezzet'),
-                                      center: Icon(
-                                        Icons.food_bank,
-                                        size: 20.0,
-                                        color: Colors.blue,
-                                      ),
-                                      backgroundColor: Colors.grey,
-                                      progressColor: Colors.blue,
-                                    )),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
-                                    child: CircularPercentIndicator(
-                                      radius: 40.0,
-                                      lineWidth: 4.0,
-                                      percent: double.parse(((_homeViewModel.productComments[index].pricePoint / 10) * 2).toString()),
-                                      header: Text('Fiyat '),
-                                      center: Icon(
-                                        Icons.money,
-                                        size: 20.0,
-                                        color: Colors.blue,
-                                      ),
-                                      backgroundColor: Colors.grey,
-                                      progressColor: Colors.blue,
-                                    )),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
-                                  child: CircularPercentIndicator(
-                                    radius: 40.0,
-                                    lineWidth: 4.0,
-                                    percent: double.parse(((_homeViewModel.productComments[index].packingPoint / 10) * 2).toString()),
-                                    header: Text('Ambalaj'),
-                                    center: Icon(
-                                      Icons.ac_unit,
-                                      size: 20.0,
-                                      color: Colors.blue,
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 10,
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+                                            child: RichText(
+                                              text: TextSpan(
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 12.0,
+                                                  ),
+                                                  children: [TextSpan(text: snapshot.data![index].comment)]),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    backgroundColor: Colors.grey,
-                                    progressColor: Colors.blue,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
-                                  child: CircularPercentIndicator(
-                                    radius: 40.0,
-                                    lineWidth: 4.0,
-                                    percent: double.parse(((_homeViewModel.productComments[index].accessPoint / 10) * 2).toString()),
-                                    header: Text('Erisim'),
-                                    center: Icon(
-                                      Icons.find_in_page,
-                                      size: 20.0,
-                                      color: Colors.blue,
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          flex: 6,
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+                                            child: RichText(
+                                              text: TextSpan(
+                                                  style: TextStyle(color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.bold),
+                                                  children: [
+                                                    TextSpan(text: 'FİYAT / PERFORMANS: ' + snapshot.data![index].pricePerformance.toString())
+                                                  ]),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 4,
+                                          child: Padding(
+                                              padding: const EdgeInsets.fromLTRB(5, 5, 5, 0),
+                                              //can
+
+                                              child: RatingBarIndicator(
+                                                rating: double.parse(snapshot.data![index].pricePerformance.toString()),
+                                                itemBuilder: (context, index) => Icon(
+                                                  Icons.star,
+                                                  color: Colors.amber,
+                                                ),
+                                                itemCount: 5,
+                                                itemSize: 18.0,
+                                                direction: Axis.horizontal,
+                                              )),
+                                        ),
+                                      ],
                                     ),
-                                    backgroundColor: Colors.grey,
-                                    progressColor: Colors.blue,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(5, 40, 10, 0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      if (SharedManager().custmerDetail != null) {
-                                        _homeViewModel.addNewCommentNavigate(_homeViewModel.productComments[index]);
-                                      } else {
-                                        _homeViewModel.goToLogin();
-                                      }
-                                    },
-                                    child: Text(
-                                      'Yorumla',
-                                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey, fontSize: 14.0),
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          flex: 2,
+                                          child: Padding(
+                                              padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+                                              child: CircularPercentIndicator(
+                                                radius: _radius,
+                                                lineWidth: _lineWidth,
+                                                percent: double.parse(((snapshot.data![index].tastePoint! / 10) * 2).toString()),
+                                                header: Text('Lezzet'),
+                                                center: Icon(
+                                                  Icons.food_bank,
+                                                  size: 20.0,
+                                                  color: Colors.blue,
+                                                ),
+                                                backgroundColor: Colors.grey,
+                                                progressColor: Colors.blue,
+                                              )),
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: Padding(
+                                              padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
+                                              child: CircularPercentIndicator(
+                                                radius: _radius,
+                                                lineWidth: _lineWidth,
+                                                percent: double.parse(((snapshot.data![index].pricePoint! / 10) * 2).toString()),
+                                                header: Text('Fiyat '),
+                                                center: Icon(
+                                                  Icons.money,
+                                                  size: 20.0,
+                                                  color: Colors.blue,
+                                                ),
+                                                backgroundColor: Colors.grey,
+                                                progressColor: Colors.blue,
+                                              )),
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
+                                            child: CircularPercentIndicator(
+                                              radius: _radius,
+                                              lineWidth: _lineWidth,
+                                              percent: double.parse(((snapshot.data![index].packingPoint! / 10) * 2).toString()),
+                                              header: Text('Ambalaj'),
+                                              center: Icon(
+                                                Icons.ac_unit,
+                                                size: 20.0,
+                                                color: Colors.blue,
+                                              ),
+                                              backgroundColor: Colors.grey,
+                                              progressColor: Colors.blue,
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
+                                            child: CircularPercentIndicator(
+                                              radius: _radius,
+                                              lineWidth: _lineWidth,
+                                              percent: double.parse(((snapshot.data![index].accessPoint! / 10) * 2).toString()),
+                                              header: Text('Erisim'),
+                                              center: Icon(
+                                                Icons.find_in_page,
+                                                size: 20.0,
+                                                color: Colors.blue,
+                                              ),
+                                              backgroundColor: Colors.grey,
+                                              progressColor: Colors.blue,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        // Expanded(
+                                        //  flex: 2,
+                                        // child:
+                                        Padding(
+                                            padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+                                            child: _iconLabelButtonLike(snapshot.data![index], context)),
+                                        //  ),
+                                        // Expanded(
+                                        //  flex: 2,
+                                        // child:
+                                        // Padding(
+                                        //   padding: const EdgeInsets.fromLTRB(2, 10, 10, 0),
+                                        //   child: RichText(
+                                        //     text: TextSpan(
+                                        //         style: TextStyle(color: mainColor, fontSize: 10.0, fontWeight: FontWeight.bold),
+                                        //         children: [TextSpan(text: '3')]),
+                                        //   ),
+                                        // ),
+                                        //  ),
+                                        // Expanded(
+                                        //  flex: 2,
+                                        // child:
+                                        Padding(
+                                            padding: const EdgeInsets.fromLTRB(5, 10, 10, 0), child: _iconLabelButtonComment(snapshot.data![index])),
+                                        //  ),
+                                        // Expanded(
+//flex: 2,
+                                        // child:
+                                        // Padding(
+                                        //   padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+                                        //   child: RichText(
+                                        //     text: TextSpan(
+                                        //         style: TextStyle(color: mainColor, fontSize: 10.0, fontWeight: FontWeight.bold),
+                                        //         children: [TextSpan(text: '3')]),
+                                        //   ),
+                                        // ),
+                                        // ),
+                                        // Expanded(
+                                        //   flex: 2,
+                                        //   child: Padding(
+                                        //     padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+                                        //     child: InkWell(
+                                        //       onTap: () {
+                                        //         _homeViewModel.addNewCommentNavigate(_snapshot.data[index]);
+                                        //       },
+                                        //       child: Text(
+                                        //         'Yorumla',
+                                        //         style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey, fontSize: 13.0),
+                                        //       ),
+                                        //     ),
+                                        //   ),
+                                        // ),
+                                      ],
+                                    ),
+                                  ]),
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
+                            ])
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                })));
+                    );
+                  });
+            }));
   }
 
-  Widget get _buildBannerContent {
+  Widget _buildBannerContent(HomeViewModel homeViewModel) {
     return Stack(
       children: <Widget>[
         Column(
@@ -339,21 +419,21 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                 children: <Widget>[
                   PageView.builder(
                       onPageChanged: ((f) {
-                        _homeViewModel.changeBanner(f);
+                        homeViewModel.changeBanner(f);
                       }),
-                      itemCount: _homeViewModel.banners == null ? 0 : _homeViewModel.banners.length,
+                      itemCount: homeViewModel.banners == null ? 0 : homeViewModel.banners!.length,
                       physics: ClampingScrollPhysics(),
-                      controller: _homeViewModel.bannerPageController,
+                      controller: homeViewModel.bannerPageController,
                       itemBuilder: (BuildContext context, int itemIndex) {
                         return InkWell(
                             onTap: () {
-                              _homeViewModel.clickBanner(itemIndex);
+                              homeViewModel.clickBanner(itemIndex);
                             },
-                            child: _buildBannerItem(itemIndex));
+                            child: _buildBannerItem(itemIndex, homeViewModel));
                       }),
-                  _homeViewModel.banners != null && _homeViewModel.banners.isNotEmpty
+                  homeViewModel.banners != null && homeViewModel.banners!.isNotEmpty
                       ? Padding(
-                          padding: EdgeInsets.symmetric(vertical: UIHelper.dynamicHeight(10)),
+                          padding: EdgeInsets.symmetric(vertical: UIHelper.dynamicHeight(30)),
                           child: Align(
                             alignment: Alignment.center,
                             child: Column(
@@ -361,12 +441,12 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
                                 DotsIndicator(
-                                  dotsCount: _homeViewModel.banners.length,
-                                  position: _homeViewModel.currentBannerPosition.toDouble(),
+                                  dotsCount: homeViewModel.banners!.length,
+                                  position: homeViewModel.currentBannerPosition.toDouble(),
                                   decorator: DotsDecorator(
                                       spacing: EdgeInsets.all((2)),
-                                      size: Size(UIHelper.dynamicHeight(16), UIHelper.dynamicHeight(16)),
-                                      activeSize: Size(UIHelper.dynamicHeight(24), UIHelper.dynamicHeight(24))),
+                                      size: Size(UIHelper.dynamicHeight(16), UIHelper.dynamicHeight(48)),
+                                      activeSize: Size(UIHelper.dynamicHeight(48), UIHelper.dynamicHeight(48))),
                                 ),
                               ],
                             ),
@@ -378,27 +458,27 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
             ),
             Container(
               color: mainColor,
-              height: UIHelper.dynamicHeight(240),
+              height: UIHelper.dynamicHeight(150),
               child: Row(
                 children: <Widget>[
                   Expanded(
                     child: HeaderItemWidget(
                       title: 'Yorum Sayısı',
-                      bigSubTitle: _homeViewModel.commentCount,
+                      bigSubTitle: homeViewModel.commentCount!,
                       smallSubTitle: '',
                     ),
                   ),
                   Expanded(
                     child: HeaderItemWidget(
                       title: 'Ürün Sayısı',
-                      bigSubTitle: _homeViewModel.commentCount,
+                      bigSubTitle: homeViewModel.commentCount!,
                       smallSubTitle: '',
                     ),
                   ),
                   Expanded(
                     child: HeaderItemWidget(
                       title: 'Fotoğraf Sayısı',
-                      bigSubTitle: _homeViewModel.commentCount,
+                      bigSubTitle: homeViewModel.commentCount!,
                       smallSubTitle: '',
                     ),
                   ),
@@ -411,25 +491,146 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     );
   }
 
-  Widget _buildBannerItem(int itemIndex) {
+  Widget _iconLabelButtonModal(ProductComment productComment, BuildContext context) => InkWell(
+        child: _iconLabelShowModal(context, productComment),
+        onTap: () {
+          showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    ListTile(
+                      // leading: Icon(Icons.accou),
+                      title: Center(child: Text('Kisiyi Takip Et')),
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      //  leading: Icon(Icons.music_note),
+                      title: Center(child: Text('Urunu Takip Et')),
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      //  leading: Icon(Icons.videocam),
+                      title: Center(child: Text('Gonderiyi Sikayet Et')),
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      //  leading: Icon(Icons.share),
+                      title: Center(child: Text('Kisiyi Sikayet Et')),
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                );
+              });
+          // _homeViewModel.gotoSucces(notice);
+        },
+      );
+
+  Widget _iconLabelButtonLike(ProductComment productComment, BuildContext context) => InkWell(
+        child: _iconLabelLike(context, productComment),
+        onTap: () {
+          context.read(homeViewProvider.notifier).likeComment(productComment);
+          // _homeViewModel.gotoSucces(notice);
+        },
+      );
+
+  Widget _iconLabelButtonComment(ProductComment productComment) => InkWell(
+        child: _iconLabelComment(productComment.commentCount.toString(), productComment.accessPoint!),
+        onTap: () {
+          // _homeViewModel.gotoSucces(notice);
+        },
+      );
+
+  Widget _iconLabelShowModal(
+    BuildContext context,
+    ProductComment productComment,
+  ) =>
+      Wrap(
+        crossAxisAlignment: WrapCrossAlignment.end,
+        spacing: 5,
+        children: <Widget>[
+          Icon(
+            Icons.pending_outlined,
+            color: Colors.grey,
+          ),
+          SizedBox(
+            width: 5,
+          )
+        ],
+      );
+
+  Widget _iconLabelLike(
+    BuildContext context,
+    ProductComment productComment,
+  ) =>
+      Wrap(
+        crossAxisAlignment: WrapCrossAlignment.end,
+        spacing: 5,
+        children: <Widget>[
+          Icon(
+            Icons.favorite,
+            color: CoreHelper.getColor(productComment.isLike),
+          ),
+          InkWell(
+            onTap: () {
+              // context.router.push(
+              //   CommetLikeView(productCommentId: productComment.id!.toString()),
+              // );
+              // AutoRoute(path: '/books', page: CommentLikePage);
+              context.read(homeViewProvider.notifier).goToLikeDetail(productComment.id.toString());
+            },
+            child: Text(productComment.likeCount.toString()),
+          ),
+          SizedBox(
+            width: 5,
+          )
+        ],
+      );
+
+  Widget _iconLabelComment(String text, int status) => Wrap(
+        crossAxisAlignment: WrapCrossAlignment.end,
+        spacing: 5,
+        children: <Widget>[
+          Icon(
+            Icons.comment,
+            color: Colors.grey,
+            //color: CoreHelper.getColor(status),
+          ),
+          Text(text),
+          SizedBox(
+            width: 5,
+          )
+        ],
+      );
+
+  Widget _buildBannerItem(int itemIndex, HomeViewModel homeViewModel) {
     return Hero(
-      tag: _homeViewModel.banners[itemIndex].id,
+      tag: homeViewModel.banners![itemIndex].id!,
       child: Container(
         padding: EdgeInsets.only(left: UIHelper.dynamicHeight(45), bottom: UIHelper.dynamicHeight(30)),
         decoration: BoxDecoration(
           image: DecorationImage(
             //image: Image.network(_homeViewModel.banners[itemIndex].bannerImageUrl ?? "").image,
-            image: CachedNetworkImageProvider(_homeViewModel.banners[itemIndex].bannerImageUrl ?? ''),
+            image: CachedNetworkImageProvider(homeViewModel.banners![itemIndex].bannerImageUrl ?? ''),
             fit: BoxFit.fill,
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.only(bottom: UIHelper.dynamicHeight(30)),
+          padding: EdgeInsets.only(bottom: UIHelper.dynamicHeight(0)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(_homeViewModel.banners[itemIndex].title ?? '',
+              Text(homeViewModel.banners![itemIndex].title ?? '',
                   style: TextStyle(
                     color: white,
                     decoration: TextDecoration.none,
@@ -443,72 +644,4 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
       ),
     );
   }
-
-  // InkWell getMainCategoryImage(MainCategory mainCategory) {
-  //   return InkWell(
-  //       onTap: () {
-  //         setState(() {
-  //           subcategory = true;
-  //           brand = false;
-  //           product = false;
-  //           mainCategoryId = mainCategory.id;
-  //           subCategoryId = '0';
-  //           selectBrandId = '0';
-  //           selectProductId = '0';
-  //         });
-  //       },
-  //       child: Container(
-  //         margin: EdgeInsets.all(2.0),
-  //         width: UIHelper.dynamicHeight(192),
-  //         decoration: BoxDecoration(
-  //             image: DecorationImage(
-  //               image: NetworkImage('https://api.bildireyimbunu.com/UploadFile/' + mainCategory.bannerImageUrl + '.jpg'),
-  //               fit: BoxFit.cover,
-  //             ),
-  //             border: Border.all(
-  //               color: mainColor,
-  //               width: 1,
-  //             ),
-  //             // borderRadius: BorderRadius.circular(12),
-  //             borderRadius: BorderRadius.circular(12.0)),
-  //       ));
-  // }
-
-  // InkWell getsubCategory(SubCategory subCategory) {
-  //   return InkWell(
-  //       onTap: () {
-  //         setState(() {
-  //           brand = true;
-  //           subCategoryId = subCategory.id;
-  //           product = false;
-  //           selectProductId = '0';
-  //         });
-  //       },
-  //       child: Container(
-  //         child: Text(
-  //           subCategory.subCategoryName,
-  //           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0, color: mainColor),
-  //         ),
-  //         margin: EdgeInsets.all(10.0),
-  //       ));
-  // }
-
-  // InkWell getBrand(Brand brand) {
-  //   return InkWell(
-  //       onTap: () {
-  //         // product = true;
-  //         setState(() {
-  //           product = true;
-  //           selectBrandId = brand.id;
-  //         });
-  //       },
-  //       child: Container(
-  //         child: Text(
-  //           brand.brandName,
-  //           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0, color: mainColor),
-  //         ),
-  //         margin: EdgeInsets.all(10.0),
-  //       ));
-  // }
-
 }

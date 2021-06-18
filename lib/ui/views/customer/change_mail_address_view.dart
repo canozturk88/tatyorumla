@@ -2,7 +2,6 @@ import 'package:tadayim_bunu/core/mixin/validation_mixin.dart';
 import 'package:tadayim_bunu/core/viewmodels/change_mail_address_view_model.dart';
 import 'package:tadayim_bunu/ui/shared/view_helper/ui_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../baseview.dart';
 import '../custom_button.dart';
 
@@ -12,7 +11,7 @@ class ChangeMailAddressView extends StatefulWidget {
 }
 
 class ChangeMailAddressState extends State with ValidationMixin {
-  ChangeMailAddressViewModel changeMailAddressViewModel;
+  late ChangeMailAddressViewModel changeMailAddressViewModel;
   final formKey = GlobalKey<FormState>();
   TextEditingController usermail = TextEditingController();
   String password = '';
@@ -20,7 +19,8 @@ class ChangeMailAddressState extends State with ValidationMixin {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance.init(context);
+    //can__
+    // ScreenUtil.instance.init(context);
     return BaseView<ChangeMailAddressViewModel>(
       onModelReady: (model) {
         model.setContext(context);
@@ -68,86 +68,86 @@ class ChangeMailAddressState extends State with ValidationMixin {
             padding: const EdgeInsets.all(15),
             child: Column(
               children: <Widget>[
-                _textFieldOldPassword(UIHelper.oldPassword, true),
-                _textFieldEmail(
-                  UIHelper.newemail,
-                  false,
-                ),
+                // _textFieldOldPassword(UIHelper.oldPassword, true),
+                // _textFieldEmail(
+                //   UIHelper.newemail,
+                //   false,
+                // ),
               ],
             ),
           ),
         ),
       );
 
-  Widget _textFieldOldPassword(String text, bool obscure) => Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-        child: TextFormField(
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.left,
-          obscureText: obscure,
-          autocorrect: false,
-          cursorColor: Colors.white,
-          maxLines: 1,
-          onSaved: (String value) {
-            password = value;
-          },
-          decoration: InputDecoration(
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: IconButton(
-                icon: Icon(Icons.vpn_key),
-                color: Colors.white,
-                onPressed: () {},
-              ),
-            ),
-            hintText: text,
-            hintStyle: TextStyle(color: Colors.white),
-          ),
-        ),
-      );
+  // Widget _textFieldOldPassword(String text, bool obscure) => Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+  //       child: TextFormField(
+  //         style: TextStyle(color: Colors.white),
+  //         textAlign: TextAlign.left,
+  //         obscureText: obscure,
+  //         autocorrect: false,
+  //         cursorColor: Colors.white,
+  //         maxLines: 1,
+  //         onSaved: (String value) {
+  //           password = value;
+  //         },
+  //         decoration: InputDecoration(
+  //           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+  //           prefixIcon: Padding(
+  //             padding: const EdgeInsets.only(right: 10.0),
+  //             child: IconButton(
+  //               icon: Icon(Icons.vpn_key),
+  //               color: Colors.white,
+  //               onPressed: () {},
+  //             ),
+  //           ),
+  //           hintText: text,
+  //           hintStyle: TextStyle(color: Colors.white),
+  //         ),
+  //       ),
+  //     );
 
   Widget get _description => Text(UIHelper.changPasswprdExplanation, style: _helloTextStyle(30));
 
-  Widget _textFieldEmail(String text, bool obscure) => Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-        child: TextFormField(
-          controller: usermail,
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.left,
-          keyboardType: TextInputType.emailAddress,
-          // obscureText: obscure,
-          autocorrect: false,
-          readOnly: false,
-          validator: validateEmail,
-          onSaved: (String value) {
-            newEmail = value;
-          },
-          cursorColor: Colors.white,
-          maxLines: 1,
-          decoration: InputDecoration(
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: IconButton(
-                icon: Icon(Icons.email),
-                color: Colors.white,
-                onPressed: () {},
-              ),
-            ),
-            hintText: text,
-            hintStyle: TextStyle(color: Colors.white),
-          ),
-        ),
-      );
+  // Widget _textFieldEmail(String text, bool obscure) => Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+  //       child: TextFormField(
+  //         controller: usermail,
+  //         style: TextStyle(color: Colors.white),
+  //         textAlign: TextAlign.left,
+  //         keyboardType: TextInputType.emailAddress,
+  //         // obscureText: obscure,
+  //         autocorrect: false,
+  //         readOnly: false,
+  //         validator: validateEmail,
+  //         onSaved: (String value) {
+  //           newEmail = value;
+  //         },
+  //         cursorColor: Colors.white,
+  //         maxLines: 1,
+  //         decoration: InputDecoration(
+  //           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+  //           prefixIcon: Padding(
+  //             padding: const EdgeInsets.only(right: 10.0),
+  //             child: IconButton(
+  //               icon: Icon(Icons.email),
+  //               color: Colors.white,
+  //               onPressed: () {},
+  //             ),
+  //           ),
+  //           hintText: text,
+  //           hintStyle: TextStyle(color: Colors.white),
+  //         ),
+  //       ),
+  //     );
 
   Widget get _loginButton => Padding(
         padding: const EdgeInsets.only(top: 20.0),
         child: InkWell(
           borderRadius: loginButtonBorderStyle,
           onTap: () {
-            if (formKey.currentState.validate()) {
-              formKey.currentState.save();
+            if (formKey.currentState!.validate()) {
+              formKey.currentState!.save();
               changeMailAddressViewModel.saveNewEmail(password, newEmail);
             }
           },

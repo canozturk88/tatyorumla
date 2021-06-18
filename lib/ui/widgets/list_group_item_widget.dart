@@ -2,12 +2,13 @@ import 'package:tadayim_bunu/ui/shared/view_helper/ui_helper.dart';
 import 'package:flutter/material.dart';
 
 class ListGroupItemView extends StatelessWidget {
-  const ListGroupItemView({Key key, this.title, this.onPress, this.rightText, this.isDivider, this.dropDownChild}) : super(key: key);
-  final String title;
-  final String rightText;
-  final VoidCallback onPress;
+  const ListGroupItemView({required Key key, this.title, this.onPress, this.rightText, required this.isDivider, this.dropDownChild})
+      : super(key: key);
+  final String? title;
+  final String? rightText;
+  final VoidCallback? onPress;
   final bool isDivider;
-  final Widget dropDownChild;
+  final Widget? dropDownChild;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class ListGroupItemView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    title,
+                    title!,
                     style: TextStyle(color: UIHelper.PEAR_PRIMARY_COLOR, fontSize: UIHelper.dynamicScaleSp(44)),
                   ),
                   Row(

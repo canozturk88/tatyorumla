@@ -1,9 +1,7 @@
-import 'package:networking/networking/serializable_object.dart';
-
-class ProductResponseModel implements SerializableObject<ProductResponseModel> {
-  int responseCode;
-  String responseDescription;
-  List<Product> products;
+class ProductResponseModel {
+  int? responseCode;
+  String? responseDescription;
+  List<Product>? products;
 
   ProductResponseModel({this.responseCode, this.responseDescription, this.products});
 
@@ -13,46 +11,40 @@ class ProductResponseModel implements SerializableObject<ProductResponseModel> {
     if (json['Products'] != null) {
       products = <Product>[];
       json['Products'].forEach((v) {
-        products.add(Product.fromJson(v));
+        products!.add(Product.fromJson(v));
       });
     }
   }
 
-  @override
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['ResponseCode'] = responseCode;
     data['ResponseDescription'] = responseDescription;
     if (products != null) {
-      data['Products'] = products.map((v) => v.toJson(v)).toList();
+      data['Products'] = products!.map((v) => v.toJson(v)).toList();
     }
     return data;
   }
 
-  @override
   ProductResponseModel fromJson(Map<String, dynamic> json) {
     return ProductResponseModel.fromJson(json);
   }
 }
 
 class Product {
-  String id;
-  String brand;
-  String productName;
-  String detail;
-  String bannerImageUrl;
-  String pricePerformance;
-  String tastePoint;
-  String pricePoint;
-  String packinPoint;
-  String accessPoint;
-  int commentCount;
+  String? id;
+  String? brand;
+  String? productName;
+  String? detail;
+  String? bannerImageUrl;
+  String? pricePerformance;
+  String? tastePoint;
+  String? pricePoint;
+  String? packinPoint;
+  String? accessPoint;
+  int? commentCount;
 
-  Product({
-    this.id,
-    this.productName,
-    this.bannerImageUrl,
-  });
+  Product({this.id, this.productName, this.bannerImageUrl, this.accessPoint});
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['Id'];

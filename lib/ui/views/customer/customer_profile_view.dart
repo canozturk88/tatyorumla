@@ -1,14 +1,11 @@
 import 'package:tadayim_bunu/core/services/shared_prefernces_api.dart';
 import 'package:tadayim_bunu/core/viewmodels/customer_profile_view_model.dart';
 import 'package:tadayim_bunu/ui/shared/view_helper/ui_helper.dart';
-import 'package:tadayim_bunu/ui/views/customer/change_mail_address_view.dart';
-import 'package:tadayim_bunu/ui/views/customer/change_password_view.dart';
-import 'package:tadayim_bunu/ui/widgets/list_group_item_widget.dart';
-
+// import 'package:tadayim_bunu/ui/views/customer/change_mail_address_view.dart';
+// import 'package:tadayim_bunu/ui/views/customer/change_password_view.dart';
+// import 'package:tadayim_bunu/ui/widgets/list_group_item_widget.dart';
 import '../baseview.dart';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:async';
 import 'dart:ui';
 
@@ -18,9 +15,11 @@ class CustomerProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<CustomerProfileView> {
+  late CustomerProfileViewModel customerProfileViewModel;
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance.init(context);
+    //can__
+    // ScreenUtil.instance.init(context);
     return BaseView<CustomerProfileViewModel>(
       onModelReady: (model) {
         model.setContext(context);
@@ -93,7 +92,7 @@ class _ProfileViewState extends State<CustomerProfileView> {
                                 Padding(
                                   padding: EdgeInsets.all(UIHelper.dynamicHeight(24)),
                                   child: Text(
-                                    SharedManager().custmerDetail.nameSurname,
+                                    SharedManager().custmerDetail!.nameSurname!,
                                     // SharedManager().loginRequest.nameSurname,
                                     style: TextStyle(color: Colors.white, fontSize: UIHelper.dynamicScaleSp(54), fontWeight: FontWeight.bold),
                                   ),
@@ -144,18 +143,19 @@ class _ProfileViewState extends State<CustomerProfileView> {
                             //     Navigator.push(context, MaterialPageRoute(builder: (context) => MyProfileInfoView()));
                             //   },
                             // ),
-                            ListGroupItemView(
-                              title: 'Şifre Değiştir',
-                              onPress: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordView()));
-                              },
-                            ),
-                            ListGroupItemView(
-                              title: 'E-Posta Değiştir',
-                              onPress: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => ChangeMailAddressView()));
-                              },
-                            ),
+                            // ListGroupItemView(
+                            //   key: customerProfileViewModel.,
+                            //   title: 'Şifre Değiştir',
+                            //   onPress: () {
+                            //     Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordView()));
+                            //   },
+                            // ),
+                            // ListGroupItemView(
+                            //   title: 'E-Posta Değiştir',
+                            //   onPress: () {
+                            //     Navigator.push(context, MaterialPageRoute(builder: (context) => ChangeMailAddressView()));
+                            //   },
+                            // ),
                             // ListGroupItemView(
                             //   title: 'Bildirimlerim',
                             //   onPress: () {

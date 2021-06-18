@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class LanguageConstants extends InheritedWidget {
-  static LanguageConstants of(BuildContext context) =>
+  static LanguageConstants? of(BuildContext context) =>
       // ignore: deprecated_member_use
-      context.inheritFromWidgetOfExactType(LanguageConstants);
+      // context.inheritFromWidgetOfExactType(LanguageConstants);
+      context.dependOnInheritedWidgetOfExactType<LanguageConstants>();
 
-  const LanguageConstants({Widget child, Key key}) : super(key: key, child: child);
+  const LanguageConstants({required Widget child, required Key key}) : super(child: child);
 
   final String deneme = 'deneme';
 

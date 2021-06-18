@@ -6,20 +6,20 @@ String postToJsonProductCommentCommand(ProductCommentCommand data) {
 }
 
 class ProductCommentCommand {
-  String id;
-  String productId;
-  String title;
-  String productName;
-  String comment;
-  int tastePoint;
+  String? id;
+  String? productId;
+  String? title;
+  String? productName;
+  String? comment;
+  int? tastePoint;
   // Product product;
-  int pricePerformance;
-  int pricePoint;
-  int packingPoint;
-  int accessPoint;
-  String customerNameSurName;
-  String customerId;
-  DateTime createdDate;
+  int? pricePerformance;
+  int? pricePoint;
+  int? packingPoint;
+  int? accessPoint;
+  String? customerNameSurName;
+  String? customerId;
+  DateTime? createdDate;
 
   ProductCommentCommand({
     this.id,

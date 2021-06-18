@@ -1,5 +1,4 @@
 import 'dart:convert';
-// import '../comment/product_comment.dart';
 
 String postToJsonUser(CustomerResponse data) {
   final dyn = data.toJson(data);
@@ -7,17 +6,17 @@ String postToJsonUser(CustomerResponse data) {
 }
 
 class CustomerResponse {
-  int id;
-  String mailAddress;
-  String nameSurname;
-  int userStatus;
+  int? id;
+  String? mailAddress;
+  String? nameSurname;
+  int? userStatus;
   // DateTime createdDate;
   // List<ProductComment> productComments;
-  String userToken;
+  String? userToken;
 
-  CustomerResponse(this.nameSurname, this.mailAddress);
+  CustomerResponse(this.mailAddress, this.nameSurname, this.userStatus, this.userToken, this.id);
 
-  CustomerResponse.fromJson(Map<String, dynamic> json) {
+  CustomerResponse.fromJson(Map<dynamic, dynamic> json) {
     id = json['id'];
     nameSurname = json['nameSurname'];
     mailAddress = json['mailAddress'];
@@ -37,7 +36,7 @@ class CustomerResponse {
     // }
   }
 
-  CustomerResponse.withId(this.id, this.mailAddress);
+  CustomerResponse.withId(this.id, this.mailAddress, this.nameSurname, this.userStatus, this.userToken);
 
   Map<String, dynamic> toJson(CustomerResponse customer) {
     final data = <String, dynamic>{};

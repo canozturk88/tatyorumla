@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tadayim_bunu/core/models/user/save_customer_command.dart';
 import 'package:tadayim_bunu/core/viewmodels/renew_password_view_model.dart';
 import '../../../core/mixin/validation_mixin.dart';
@@ -16,7 +15,7 @@ class RenewPasswordView extends StatefulWidget {
 }
 
 class RenewPasswordState extends State with ValidationMixin {
-  RenewPasswordViewModel renewPasswordViewModel;
+  late RenewPasswordViewModel renewPasswordViewModel;
   SaveCustomerCommand customer;
   RenewPasswordState(this.customer);
 
@@ -24,7 +23,8 @@ class RenewPasswordState extends State with ValidationMixin {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance.init(context);
+    //can__
+    // ScreenUtil.instance.init(context);
     return BaseView<RenewPasswordViewModel>(
       onModelReady: (model) {
         model.setContext(context);
@@ -72,41 +72,41 @@ class RenewPasswordState extends State with ValidationMixin {
             padding: const EdgeInsets.all(15),
             child: Column(
               children: <Widget>[
-                _textFieldPassword(UIHelper.password, true),
-                _textFieldPassword(UIHelper.passwordAgain, true),
+                //  _textFieldPassword(UIHelper.password, true),
+                // _textFieldPassword(UIHelper.passwordAgain, true),
               ],
             ),
           ),
         ),
       );
 
-  Widget _textFieldPassword(String text, bool obscure) => Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
-        child: TextFormField(
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.left,
-          obscureText: obscure,
-          autocorrect: false,
-          cursorColor: Colors.white,
-          maxLines: 1,
-          onSaved: (String value) {
-            customer.password = value;
-          },
-          decoration: InputDecoration(
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: IconButton(
-                icon: Icon(Icons.vpn_key),
-                color: Colors.white,
-                onPressed: () {},
-              ),
-            ),
-            hintText: text,
-            hintStyle: TextStyle(color: Colors.white),
-          ),
-        ),
-      );
+  // Widget _textFieldPassword(String text, bool obscure) => Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
+  //       child: TextFormField(
+  //         style: TextStyle(color: Colors.white),
+  //         textAlign: TextAlign.left,
+  //         obscureText: obscure,
+  //         autocorrect: false,
+  //         cursorColor: Colors.white,
+  //         maxLines: 1,
+  //         onSaved: (String value) {
+  //           customer.password = value;
+  //         },
+  //         decoration: InputDecoration(
+  //           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+  //           prefixIcon: Padding(
+  //             padding: const EdgeInsets.only(right: 10.0),
+  //             child: IconButton(
+  //               icon: Icon(Icons.vpn_key),
+  //               color: Colors.white,
+  //               onPressed: () {},
+  //             ),
+  //           ),
+  //           hintText: text,
+  //           hintStyle: TextStyle(color: Colors.white),
+  //         ),
+  //       ),
+  //     );
 
   Widget get _description => Text(UIHelper.renewPasswordAccount, style: _helloTextStyle(30));
 
@@ -115,9 +115,9 @@ class RenewPasswordState extends State with ValidationMixin {
         child: InkWell(
           borderRadius: _loginButtonBorderStyle,
           onTap: () {
-            if (formKey.currentState.validate()) {
-              formKey.currentState.save();
-              renewPasswordViewModel.saveNewPassword(customer.password);
+            if (formKey.currentState!.validate()) {
+              formKey.currentState!.save();
+              renewPasswordViewModel.saveNewPassword(customer.password!);
             }
           },
           child: Container(

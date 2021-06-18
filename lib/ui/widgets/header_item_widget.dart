@@ -4,7 +4,6 @@ import '../shared/view_helper/ui_helper.dart';
 
 class HeaderItemWidget extends StatelessWidget {
   const HeaderItemWidget({
-    Key key,
     this.title,
     this.bigSubTitle,
     this.bigSubTitleFontSize,
@@ -13,15 +12,15 @@ class HeaderItemWidget extends StatelessWidget {
     this.isSlider = false,
     this.weatherStatus,
     this.weatherIcon,
-  }) : super(key: key);
-  final String title;
-  final String bigSubTitle;
-  final String smallSubTitle;
+  });
+  final String? title;
+  final String? bigSubTitle;
+  final String? smallSubTitle;
   final bool isWeather;
   final bool isSlider;
-  final String weatherStatus;
-  final String weatherIcon;
-  final double bigSubTitleFontSize;
+  final String? weatherStatus;
+  final String? weatherIcon;
+  final double? bigSubTitleFontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +33,7 @@ class HeaderItemWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Text(
-          title,
+          title!,
           style: TextStyle(fontSize: UIHelper.dynamicHeight(36), fontWeight: FontWeight.w400, color: textGrey2),
           maxLines: 1,
           textAlign: TextAlign.center,
@@ -55,7 +54,7 @@ class HeaderItemWidget extends StatelessWidget {
                       )),
                   Padding(
                     padding: EdgeInsets.only(left: UIHelper.dynamicHeight(20)),
-                    child: weatherIcon != null ? Image.network(weatherIcon, width: UIHelper.dynamicHeight(40)) : Container(),
+                    child: weatherIcon != null ? Image.network(weatherIcon!, width: UIHelper.dynamicHeight(40)) : Container(),
                   )
                 ],
               )

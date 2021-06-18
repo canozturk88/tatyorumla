@@ -9,11 +9,11 @@ import 'package:flutter/material.dart';
 class ProductCommentViewModel extends BaseModel {
   final noticeScaffoldKey = GlobalKey<ScaffoldState>(debugLabel: '_productCommentViewModel');
 
-  BuildContext _context;
+  late BuildContext _context;
 
   BuildContext get context => _context;
 
-  List<ProductComment> productComments;
+  List<ProductComment>? productComments;
 
   ProductCommentViewModel() {
     getProductComment(0);
@@ -34,7 +34,7 @@ class ProductCommentViewModel extends BaseModel {
 
   void getProductComment(int page) {
     productComments = <ProductComment>[];
-    productComments = SharedManager().lastProducCommentResponseModel.productComments;
+    productComments = SharedManager().lastProducCommentResponseModel!.productComments!;
   }
 
   // ignore: always_declare_return_types

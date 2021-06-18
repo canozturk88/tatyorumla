@@ -11,7 +11,7 @@ import 'base_model.dart';
 class CustomerSignupViewModel extends BaseModel {
   final customerSignupScaffoldKey = GlobalKey<ScaffoldState>(debugLabel: '_customerSignupScaffoldKey');
 
-  BuildContext _context;
+  late BuildContext _context;
 
   BuildContext get context => _context;
 
@@ -48,7 +48,7 @@ class CustomerSignupViewModel extends BaseModel {
 
   // ignore: always_declare_return_types
   snackBarWarningMessage(String _message) async {
-    await UIHelper.showSnackBar(key: customerSignupScaffoldKey, child: Text(_message ?? ''));
+    await UIHelper.showSnackBar(key: customerSignupScaffoldKey, child: Text(_message));
     setState(ViewState.Idle);
     await navigator.navigateToRemove(Pages.SignIn);
   }

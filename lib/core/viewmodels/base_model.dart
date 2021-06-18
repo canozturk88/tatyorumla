@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../enums/viewstate.dart';
 import '../services/navigation_api.dart';
 import '../../ui/shared/language/app_localizations.dart';
-
 import '../../locator.dart';
 
 abstract class BaseModel extends ChangeNotifier {
@@ -28,12 +27,12 @@ abstract class BaseModel extends ChangeNotifier {
     }
   }
 
-  String translate(BuildContext context, String _translateText) {
-    return AppLocalizations.of(context).translate(_translateText);
+  String? translate(BuildContext context, String _translateText) {
+    return AppLocalizations.of(context)!.translate(_translateText);
   }
 
   String translateDynamicValue(BuildContext context, String _translateText, String _dynamicValue) {
-    return AppLocalizations.of(context).translateDynamicValue(_translateText, _dynamicValue);
+    return AppLocalizations.of(context)!.translateDynamicValue(_translateText, _dynamicValue);
   }
 
   @override

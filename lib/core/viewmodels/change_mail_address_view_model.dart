@@ -13,7 +13,7 @@ import 'base_model.dart';
 class ChangeMailAddressViewModel extends BaseModel {
   final changeMailAddressScaffoldKey = GlobalKey<ScaffoldState>(debugLabel: '_changeMailAddressScaffoldKey');
 
-  BuildContext _context;
+  late BuildContext _context;
 
   BuildContext get context => _context;
 
@@ -35,12 +35,12 @@ class ChangeMailAddressViewModel extends BaseModel {
     }
 
     if (isConnect) {
-      await AccountApiServices.changeMailAddress(SharedManager().custmerDetail.id, password, email).then((response) {
+      await AccountApiServices.changeMailAddress(SharedManager().custmerDetail!.id!, password, email).then((response) {
         setState(ViewState.Busy);
         if (response.statusCode == 204) {
           var newCustomerDetail = SharedManager().custmerDetail;
-          newCustomerDetail.mailAddress = email;
-          SharedManager().custmerDetail = newCustomerDetail;
+          newCustomerDetail!.mailAddress = email;
+          SharedManager().setCustmerDetail = newCustomerDetail;
           snackBarWarningMessage('E-Posta Adresi Değiştirilmiştir.');
           Future.delayed(Duration(milliseconds: 2000), () {
             navigator.navigateToRemove(Pages.MyAccount);
@@ -56,7 +56,7 @@ class ChangeMailAddressViewModel extends BaseModel {
 
   // ignore: always_declare_return_types
   snackBarWarningMessage(String _message) {
-    UIHelper.showSnackBar(key: changeMailAddressScaffoldKey, child: Text(_message ?? ''));
+    UIHelper.showSnackBar(key: changeMailAddressScaffoldKey, child: Text(_message));
     setState(ViewState.Idle);
   }
 }

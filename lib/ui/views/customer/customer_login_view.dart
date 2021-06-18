@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tadayim_bunu/core/models/user/save_customer_command.dart';
 import '../../../core/mixin/validation_mixin.dart';
 import '../../../core/viewmodels/customer_login_view_model.dart';
@@ -6,69 +8,62 @@ import '../../shared/styles/colors.dart';
 import '../../shared/view_helper/ui_helper.dart';
 
 import '../custom_button.dart';
+import '../loading_state_view_model.dart';
 import 'customer_signup_view.dart';
 import 'forgot_password_view.dart';
 
-import '../baseview.dart';
+class CustomerSignInView extends ConsumerWidget {
+  final _formKey = GlobalKey<FormBuilderState>();
+  var customerSignInScaffoldKey = GlobalKey<ScaffoldState>(debugLabel: '_customerSignInScaffoldKey');
 
-class CustomerSignInView extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => CustomerLoginState();
-}
-
-class CustomerLoginState extends State with ValidationMixin {
-  CustomerSignInViewModel _loginViewModel;
-  final formKey = GlobalKey<FormState>();
-  final custmer = SaveCustomerCommand('', '', '');
-  @override
-  Widget build(BuildContext context) {
-    return BaseView<CustomerSignInViewModel>(
-      onModelReady: (model) {
-        model.setContext(context);
-        _loginViewModel = model;
-      },
-      builder: (context, model, child) {
-        return Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-          ),
-          backgroundColor: mainColor,
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
-              child: Form(
-                key: formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    _helloText,
-                    _description,
-                    _formField,
-                    _forgetPassword,
-                    _loginButton,
-                    _signup,
-                  ],
-                ),
-              ),
+  Widget build(BuildContext context, ScopedReader watch) {
+    final customerSignInViewModel = watch(customerSignInViewProvider);
+    return Scaffold(
+      key: customerSignInScaffoldKey,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
+      backgroundColor: mainColor,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+          child: FormBuilder(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _helloText,
+                _description,
+                _formField(context),
+                _forgetPassword,
+                _loginButton(context),
+                _signup,
+              ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
-  Widget get _loginButton => Align(
+  Widget _loginButton(BuildContext context) => Align(
         alignment: Alignment.centerRight,
         child: Padding(
           padding: const EdgeInsets.only(top: 0.0),
           child: InkWell(
             borderRadius: loginButtonBorderStyle,
             onTap: () {
-              if (formKey.currentState.validate()) {
-                formKey.currentState.save();
-                _loginViewModel.saveCustomer(custmer);
+              _formKey.currentState!.save();
+              if (_formKey.currentState!.validate()) {
+                var eMail = _formKey.currentState!.value['eMail'].toString().trimRight();
+                var password = _formKey.currentState!.value['password'].toString().trimRight();
+
+                // context.read(loadingStateProvider).whileLoading(() {
+                context.read(customerSignInViewProvider.notifier).loginCustomer(eMail, password);
+                // });
               }
             },
             child: Container(
@@ -90,7 +85,7 @@ class CustomerLoginState extends State with ValidationMixin {
         ),
       );
 
-  Widget get _formField => Padding(
+  Widget _formField(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 30),
         child: Container(
           decoration: BoxDecoration(
@@ -101,30 +96,25 @@ class CustomerLoginState extends State with ValidationMixin {
             padding: const EdgeInsets.all(15),
             child: Column(
               children: <Widget>[
-                _textFieldEmail(
-                  UIHelper.email,
-                  false,
-                ),
-                _textFieldPassword(UIHelper.password, true),
+                _textFieldEmail(UIHelper.email, false, context),
+                _textFieldPassword(UIHelper.password, true, context),
               ],
             ),
           ),
         ),
       );
 
-  Widget _textFieldEmail(String text, bool obscure) => Padding(
+  Widget _textFieldEmail(String text, bool obscure, BuildContext context) => Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-        child: TextFormField(
+        child: FormBuilderTextField(
           style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.left,
+          name: 'eMail',
           obscureText: obscure,
-          autocorrect: false,
-          validator: validateEmail,
-          onSaved: (String value) {
-            custmer.mailAddress = value;
-          },
           cursorColor: Colors.white,
-          maxLines: 1,
+          // decoration: InputDecoration(
+          //   labelText: text,
+          // ),
+
           decoration: InputDecoration(
             focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
             prefixIcon: Padding(
@@ -138,21 +128,21 @@ class CustomerLoginState extends State with ValidationMixin {
             hintText: text,
             hintStyle: TextStyle(color: Colors.white),
           ),
+          validator: FormBuilderValidators.compose([
+            FormBuilderValidators.required(context, errorText: 'Mail geçerli değildir.'),
+            FormBuilderValidators.email(context, errorText: 'Mail geçerli değildir.'),
+            FormBuilderValidators.min(context, 7),
+          ]),
+          keyboardType: TextInputType.emailAddress,
         ),
       );
 
-  Widget _textFieldPassword(String text, bool obscure) => Padding(
+  Widget _textFieldPassword(String text, bool obscure, BuildContext context) => Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-        child: TextFormField(
+        child: FormBuilderTextField(
           style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.left,
+          name: 'password',
           obscureText: obscure,
-          autocorrect: false,
-          cursorColor: Colors.white,
-          onSaved: (String value) {
-            custmer.password = value;
-          },
-          maxLines: 1,
           decoration: InputDecoration(
             focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
             prefixIcon: Padding(
@@ -166,6 +156,15 @@ class CustomerLoginState extends State with ValidationMixin {
             hintText: text,
             hintStyle: TextStyle(color: Colors.white),
           ),
+          // onChanged: _onChanged,
+          // valueTransformer: (text) => num.tryParse(text),
+          validator: FormBuilderValidators.compose([
+            FormBuilderValidators.required(context, errorText: 'Şifre en az 8 karekter olmalı'),
+            // FormBuilderValidators.numeric(context),
+            FormBuilderValidators.max(context, 16, errorText: 'Şifre en fazla 16 karekter olmalı'),
+            FormBuilderValidators.min(context, 8, errorText: 'Şifre en az 8 karekter olmalı'),
+          ]),
+          keyboardType: TextInputType.visiblePassword,
         ),
       );
 
@@ -176,11 +175,14 @@ class CustomerLoginState extends State with ValidationMixin {
         child: Padding(
             padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
             child: SizedBox(
-              height: 30,
-              child: FlatButton(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
+              height: 40,
+              child: TextButton(
+                // style: ButtonStyle(
+                //     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                //         RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0), side: BorderSide(color: Colors.red)))),
+                //  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_context) => ForgotPassword()));
+                  //  Navigator.push(context, MaterialPageRoute(builder: (_context) => ForgotPassword()));
                 },
                 child: Text(UIHelper.forgetPassword, style: TextStyle(fontSize: 15, color: Colors.white)),
               ),
@@ -192,11 +194,10 @@ class CustomerLoginState extends State with ValidationMixin {
         child: Padding(
             padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
             child: SizedBox(
-              height: 30,
-              child: FlatButton(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
+              height: 40,
+              child: TextButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_context) => CustomerSignUpView()));
+                  // Navigator.push(context, MaterialPageRoute(builder: (_context) => CustomerSignUpView()));
                 },
                 child: Text(UIHelper.dontHaveAnAccount, style: TextStyle(fontSize: 15, color: Colors.white)),
               ),
@@ -205,22 +206,14 @@ class CustomerLoginState extends State with ValidationMixin {
 
   Widget get _helloText => Text(UIHelper.hello, style: _helloTextStyle(70));
 
-  Widget passwordNameField() {
-    return TextFormField(
-      obscureText: true,
-      decoration: InputDecoration(labelText: 'Şifre', hintText: 'Şifre'),
-    );
-  }
-
   TextStyle _helloTextStyle(double fontSize) => TextStyle(
         color: Colors.white,
         fontSize: UIHelper.dynamicSp(fontSize),
         fontWeight: FontWeight.bold,
       );
-  // BorderRadius get _loginButtonBorderStyle => BorderRadius.only(
-  //       bottomRight: Radius.circular(20),
-  //       topRight: Radius.circular(20),
-  //       bottomLeft: Radius.circular(20),
-  //       topLeft: Radius.circular(20),
-  //     );
+
+  // snackBarWarningMessage(GlobalKey<ScaffoldState> customerSignInScaffoldKey, String _message) async {
+  //   // setState(ViewState.Idle);
+  //   await UIHelper.showSnackBar(key: customerSignInScaffoldKey, child: Text(_message));
+  // }
 }

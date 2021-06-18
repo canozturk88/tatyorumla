@@ -64,13 +64,13 @@ class UIHelper {
 
   static const Color WHITE = Colors.white;
 
-  static double dynamicHeight(double val) => ScreenUtil.instance.setHeight(val);
+  static double dynamicHeight(double val) => ScreenUtil().setHeight(val);
 
-  static double dynamicWidth(double val) => ScreenUtil.instance.setWidth(val);
+  static double dynamicWidth(double val) => ScreenUtil().setWidth(val);
 
-  static double dynamicSp(double val) => ScreenUtil.instance.setSp(val);
+  static double dynamicSp(double val) => ScreenUtil().setSp(val);
 
-  static double dynamicScaleSp(double val) => ScreenUtil(allowFontScaling: true).setSp(val);
+  static double dynamicScaleSp(double val) => ScreenUtil().setSp(val);
 
   static const double Space5 = 5.0;
   static const double Space10 = 10.0;
@@ -130,9 +130,11 @@ class UIHelper {
   static double get mainPageContentPadding => 50.0;
 
   static Future<SnackBarClosedReason> showSnackBar(
-      {@required GlobalKey<ScaffoldState> key, Widget child, bool isFixed = true, SnackBarAction action, int duration = 2}) {
-    key.currentState.hideCurrentSnackBar();
-    return key.currentState
+      {required GlobalKey<ScaffoldState> key, required Widget child, bool isFixed = true, SnackBarAction? action, int duration = 2}) {
+    // ignore: deprecated_member_use
+    key.currentState!.hideCurrentSnackBar();
+    return key.currentState!
+        // ignore: deprecated_member_use
         .showSnackBar(SnackBar(
           behavior: SnackBarBehavior.floating,
           content: child,
@@ -164,7 +166,10 @@ class UIHelper {
 
   /// Returns a vertical space equal to the [height] supplied
   static Widget verticalSpace(double height) {
-    return SpaceView(height: height);
+    return SpaceView(
+      height: height,
+      width: 0,
+    );
   }
 
   /// Returns a vertical space with height set to [_HorizontalSpaceSmall]
@@ -184,7 +189,10 @@ class UIHelper {
 
   /// Returns a vertical space equal to the [width] supplied
   static Widget horizontalSpace(double width) {
-    return SpaceView(width: width);
+    return SpaceView(
+      width: width,
+      height: 0,
+    );
   }
 
   static String unMaskedPhone(String _phone) {
@@ -207,7 +215,7 @@ class UIHelper {
                 size: 35,
               ),
               UIHelper.verticalSpaceMedium(),
-              Text(errorResponse.responseDescription, style: TextStyle(fontSize: dynamicScaleSp(Space45))),
+              Text(errorResponse.responseDescription!, style: TextStyle(fontSize: dynamicScaleSp(Space45))),
             ],
           ),
         ),

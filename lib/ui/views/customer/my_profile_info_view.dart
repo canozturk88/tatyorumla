@@ -4,7 +4,6 @@ import 'package:tadayim_bunu/core/services/shared_prefernces_api.dart';
 import 'package:tadayim_bunu/core/viewmodels/my_profile_info_view_model.dart';
 import 'package:tadayim_bunu/ui/shared/view_helper/ui_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../baseview.dart';
 import '../custom_button.dart';
 
@@ -17,7 +16,7 @@ class MyProfileInfoView extends StatefulWidget {
 
 class MyProfileInfoState extends State with ValidationMixin {
   final formKey = GlobalKey<FormState>();
-  MyProfileInfoViewModel _myProfileInfoViewModel;
+  late MyProfileInfoViewModel _myProfileInfoViewModel;
   TextEditingController userName = TextEditingController();
   TextEditingController usermail = TextEditingController();
   TextEditingController userPhone = TextEditingController();
@@ -28,7 +27,8 @@ class MyProfileInfoState extends State with ValidationMixin {
   @override
   Widget build(BuildContext context) {
     getCustomerDetail();
-    ScreenUtil.instance.init(context);
+    //can__
+    // ScreenUtil.instance.init(context);
     return BaseView<MyProfileInfoViewModel>(
       onModelReady: (model) {
         model.setContext(context);
@@ -36,7 +36,7 @@ class MyProfileInfoState extends State with ValidationMixin {
       },
       builder: (context, model, child) {
         return Scaffold(
-          key: _myProfileInfoViewModel.myProfileInfoViewModel,
+          key: _myProfileInfoViewModel.myProfileInfoViewModelKey,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0.0,
@@ -76,119 +76,119 @@ class MyProfileInfoState extends State with ValidationMixin {
             padding: const EdgeInsets.all(15),
             child: Column(
               children: <Widget>[
-                _textFielCustomeName(
-                  UIHelper.nameSurname,
-                  false,
-                ),
-                _textFieldEmail(
-                  UIHelper.email,
-                  false,
-                ),
-                _textFieldPhone(UIHelper.phone, true),
+                // _textFielCustomeName(
+                //   UIHelper.nameSurname,
+                //   false,
+                // ),
+                // _textFieldEmail(
+                //   UIHelper.email,
+                //   false,
+                // ),
+                //  _textFieldPhone(UIHelper.phone, true),
               ],
             ),
           ),
         ),
       );
 
-  Widget _textFielCustomeName(String text, bool obscure) => Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-        child: TextFormField(
-          controller: userName,
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.left,
-          keyboardType: TextInputType.text,
-          obscureText: obscure,
-          autocorrect: false,
-          validator: validateFirtsName,
-          autofocus: false,
-          // onChanged: (text) => {userName.text},
+  // Widget _textFielCustomeName(String text, bool obscure) => Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+  //       child: TextFormField(
+  //         controller: userName,
+  //         style: TextStyle(color: Colors.white),
+  //         textAlign: TextAlign.left,
+  //         keyboardType: TextInputType.text,
+  //         obscureText: obscure,
+  //         autocorrect: false,
+  //         validator: validateFirtsName,
+  //         autofocus: false,
+  //         // onChanged: (text) => {userName.text},
 
-          // onSaved: (String value) {
-          //   //  customer.nameSurname = value;can
-          // },
-          cursorColor: Colors.white,
-          maxLines: 1,
-          decoration: InputDecoration(
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: IconButton(
-                icon: Icon(Icons.account_circle),
-                color: Colors.white,
-                onPressed: () {},
-              ),
-            ),
-            hintText: text,
-            hintStyle: TextStyle(color: Colors.white),
-          ),
-        ),
-      );
+  //         // onSaved: (String value) {
+  //         //   //  customer.nameSurname = value;can
+  //         // },
+  //         cursorColor: Colors.white,
+  //         maxLines: 1,
+  //         decoration: InputDecoration(
+  //           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+  //           prefixIcon: Padding(
+  //             padding: const EdgeInsets.only(right: 10.0),
+  //             child: IconButton(
+  //               icon: Icon(Icons.account_circle),
+  //               color: Colors.white,
+  //               onPressed: () {},
+  //             ),
+  //           ),
+  //           hintText: text,
+  //           hintStyle: TextStyle(color: Colors.white),
+  //         ),
+  //       ),
+  //     );
 
-  Widget _textFieldEmail(String text, bool obscure) => Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-        child: TextFormField(
-          controller: usermail,
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.left,
-          keyboardType: TextInputType.emailAddress,
-          // obscureText: obscure,
-          autocorrect: false,
-          readOnly: true,
-          validator: validateEmail,
-          onSaved: (String value) {
-            //    customer.mailAddress = value;
-          },
-          cursorColor: Colors.white,
-          maxLines: 1,
-          decoration: InputDecoration(
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: IconButton(
-                icon: Icon(Icons.email),
-                color: Colors.white,
-                onPressed: () {},
-              ),
-            ),
-            hintText: text,
-            hintStyle: TextStyle(color: Colors.white),
-          ),
-        ),
-      );
+  // Widget _textFieldEmail(String text, bool obscure) => Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+  //       child: TextFormField(
+  //         controller: usermail,
+  //         style: TextStyle(color: Colors.white),
+  //         textAlign: TextAlign.left,
+  //         keyboardType: TextInputType.emailAddress,
+  //         // obscureText: obscure,
+  //         autocorrect: false,
+  //         readOnly: true,
+  //         validator: validateEmail,
+  //         onSaved: (String value) {
+  //           //    customer.mailAddress = value;
+  //         },
+  //         cursorColor: Colors.white,
+  //         maxLines: 1,
+  //         decoration: InputDecoration(
+  //           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+  //           prefixIcon: Padding(
+  //             padding: const EdgeInsets.only(right: 10.0),
+  //             child: IconButton(
+  //               icon: Icon(Icons.email),
+  //               color: Colors.white,
+  //               onPressed: () {},
+  //             ),
+  //           ),
+  //           hintText: text,
+  //           hintStyle: TextStyle(color: Colors.white),
+  //         ),
+  //       ),
+  //     );
 
-  Widget _textFieldPhone(String text, bool obscure) => Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-        child: TextFormField(
-          controller: userPhone,
-          keyboardType: TextInputType.phone,
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.left,
-          readOnly: true,
-          // obscureText: obscure,
-          autocorrect: false,
-          maxLength: 10,
-          validator: validatePhone,
-          onSaved: (String value) {
-            //  customer.phone = value;
-          },
-          cursorColor: Colors.white,
-          maxLines: 1,
-          decoration: InputDecoration(
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: IconButton(
-                icon: Icon(Icons.phone),
-                color: Colors.white,
-                onPressed: () {},
-              ),
-            ),
-            hintText: text,
-            hintStyle: TextStyle(color: Colors.white),
-          ),
-        ),
-      );
+  // Widget _textFieldPhone(String text, bool obscure) => Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+  //       child: TextFormField(
+  //         controller: userPhone,
+  //         keyboardType: TextInputType.phone,
+  //         style: TextStyle(color: Colors.white),
+  //         textAlign: TextAlign.left,
+  //         readOnly: true,
+  //         // obscureText: obscure,
+  //         autocorrect: false,
+  //         maxLength: 10,
+  //         validator: validatePhone,
+  //         onSaved: (String value) {
+  //           //  customer.phone = value;
+  //         },
+  //         cursorColor: Colors.white,
+  //         maxLines: 1,
+  //         decoration: InputDecoration(
+  //           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+  //           prefixIcon: Padding(
+  //             padding: const EdgeInsets.only(right: 10.0),
+  //             child: IconButton(
+  //               icon: Icon(Icons.phone),
+  //               color: Colors.white,
+  //               onPressed: () {},
+  //             ),
+  //           ),
+  //           hintText: text,
+  //           hintStyle: TextStyle(color: Colors.white),
+  //         ),
+  //       ),
+  //     );
 
   Widget get _description => Text(UIHelper.changeInfoStatus, style: _helloTextStyle(30));
 
@@ -197,8 +197,8 @@ class MyProfileInfoState extends State with ValidationMixin {
         child: InkWell(
           borderRadius: loginButtonBorderStyle,
           onTap: () {
-            if (formKey.currentState.validate()) {
-              formKey.currentState.save();
+            if (formKey.currentState!.validate()) {
+              formKey.currentState!.save();
               _myProfileInfoViewModel.updateProfilInfo(userName.text);
               // if (returnValue != null) {
               //   // ignore: unrelated_type_equality_checks
@@ -281,8 +281,8 @@ class MyProfileInfoState extends State with ValidationMixin {
     if (SharedManager().custmerDetail != null) {
       user = SharedManager().custmerDetail as SaveCustomerCommand;
 
-      userName.text = user.nameSurname;
-      usermail.text = user.mailAddress;
+      userName.text = user.nameSurname!;
+      usermail.text = user.mailAddress!;
       //  userPhone.text = user.phone;
     } else {
       var _token = SharedManager().jwtToken;

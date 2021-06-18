@@ -13,7 +13,7 @@ class RenewPasswordViewModel extends BaseModel {
   BuildContext get context => _context;
   final renewPasswordScaffoldKey = GlobalKey<ScaffoldState>();
 
-  BuildContext _context;
+  late BuildContext _context;
 
   RenewPasswordViewModel();
 
@@ -25,7 +25,7 @@ class RenewPasswordViewModel extends BaseModel {
 
   // ignore: missing_return
   void saveNewPassword(String newPassword) {
-    AccountApiServices.renewPassword(SharedManager().custmerDetail.id, newPassword).then((response) {
+    AccountApiServices.renewPassword(SharedManager().custmerDetail!.id!, newPassword).then((response) {
       setState(ViewState.Busy);
       if (response.statusCode == 204) {
         // Map userMap = jsonDecode(response.body);
@@ -45,7 +45,7 @@ class RenewPasswordViewModel extends BaseModel {
 
   // ignore: always_declare_return_types
   snackBarWarningMessage(String _message) async {
-    await UIHelper.showSnackBar(key: renewPasswordScaffoldKey, child: Text(_message ?? ''));
+    await UIHelper.showSnackBar(key: renewPasswordScaffoldKey, child: Text(_message));
     setState(ViewState.Idle);
     await navigator.navigateToRemove(Pages.SignIn);
   }

@@ -7,28 +7,28 @@ class NavigationService {
 
   final _removeAllOldRoutes = (Route<dynamic> route) => false;
 
-  Future<dynamic> navigateTo(Pages routeType, [Object arguments = '', int extraVal]) async {
-    return await navigatorKey.currentState.pushNamed(_named(routeType), arguments: arguments);
+  Future<dynamic> navigateTo(Pages routeType, [Object arguments = '', int? extraVal]) async {
+    return await navigatorKey.currentState!.pushNamed(_named(routeType), arguments: arguments);
   }
 
   void pop() {
     if (isPop()) {
-      return navigatorKey.currentState.pop();
+      return navigatorKey.currentState!.pop();
     }
     return null;
   }
 
   bool isPop() {
-    return navigatorKey.currentState.canPop();
+    return navigatorKey.currentState!.canPop();
   }
 
   Future<dynamic> navigateToRemove(Pages routeType, [Object arguments = '']) async {
-    return await navigatorKey.currentState.pushNamedAndRemoveUntil(_named(routeType), _removeAllOldRoutes, arguments: arguments);
+    return await navigatorKey.currentState!.pushNamedAndRemoveUntil(_named(routeType), _removeAllOldRoutes, arguments: arguments);
   }
 
   void fullScreenPopup() {
     // ignore: unnecessary_new
-    navigatorKey.currentState.push(new MaterialPageRoute<Null>(builder: newMethod, fullscreenDialog: true));
+    navigatorKey.currentState!.push(new MaterialPageRoute<Null>(builder: newMethod, fullscreenDialog: true));
   }
 
   Widget newMethod(BuildContext context) {
@@ -86,6 +86,9 @@ class NavigationService {
 
       case Pages.FilterPage:
         return '/filterPage';
+
+      case Pages.likeDetail:
+        return '/likeDetail';
 
       default:
         return '/';

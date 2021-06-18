@@ -2,83 +2,159 @@ import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tadayim_bunu/core/apis/account/account_api.dart';
 import 'package:tadayim_bunu/core/apis/productComment/product_comment_api.dart';
-import 'package:tadayim_bunu/core/enums/page_named.dart';
 import 'package:tadayim_bunu/core/models/user/customer_detail_response.dart';
-import 'package:tadayim_bunu/core/models/user/save_customer_command.dart';
 import 'package:tadayim_bunu/core/services/shared_prefernces_api.dart';
-import 'package:tadayim_bunu/ui/shared/view_helper/ui_helper.dart';
-import '../enums/viewstate.dart';
-import 'base_model.dart';
+import 'package:tadayim_bunu/services/api.dart';
+import 'package:tadayim_bunu/services/converters.dart';
+import 'package:tadayim_bunu/services/error_converter.dart';
+import 'package:tadayim_bunu/services/request_interceptor.dart';
 
-class CustomerSignInViewModel extends BaseModel {
-  final customerSignInScaffoldKey = GlobalKey<ScaffoldState>(debugLabel: '_customerSignInScaffoldKey');
+// final chopperClientProvider = Provider<ChopperClient>((_) {
+//   final headers = {"Bearer": "Bearer"};
+//   final factories = {
+//     CustomerResponse: (json) => CustomerResponse.fromJson(json),
+//     //  CustomerResponse: (json) => CustomerResponse.fromJson(json),
+//   };
 
-  BuildContext _context;
+//   return ChopperClient(
+//       services: [
+//         JsonPlaceHolderService.create()
+//       ],
+//       interceptors: [
+// // before request
+//         MyRequestInterceptor(),
 
-  BuildContext get context => _context;
+// // headers
+//         HeadersInterceptor(headers),
 
-  CustomerSignInViewModel();
-  @override
-  void setContext(BuildContext context) {
-    _context = context;
+// // default chopper logging
+//         HttpLoggingInterceptor(),
+//       ],
+
+// // error converter
+//       errorConverter: MyErrorConverter(),
+
+// // json converter factories
+//       converter: Converters(factories));
+// });
+
+final customerSignInViewProvider = StateNotifierProvider<CustomerSignInViewModel, AuthState>((_) => CustomerSignInViewModel());
+
+enum AuthState { anon, auth, none }
+late final Reader _reader;
+
+class CustomerSignInViewModel extends StateNotifier<AuthState> {
+  CustomerSignInViewModel() : super(AuthState.none);
+
+  //final customerSignInViewProvider = StateNotifierProvider<CustomerSignInViewModel, AuthState>((_) => CustomerSignInViewModel());
+
+  //  static final provider = StateNotifierProvider<CustomerSignInViewModel, AsyncValue<AuthState>>((ref) => CustomerSignInViewModel(ref.read));
+
+  Future<void> loginCustomer(String email, String password) async {
+    //state = AsyncValue.loading() as AuthState;
+
+    // final chopper = _reader(chopperClientProvider).getService<JsonPlaceHolderService>();
+    // final response = await chopper.loginCustomer(email, password);
+    // if (response.isSuccessful) {
+    //   // return response.body;
+    // } else {
+    //   // return response.error;
+    // }
   }
 
-  Future<void> saveCustomer(SaveCustomerCommand saveCustomerCommand) async {
-    setState(ViewState.Idle);
-    if (state == ViewState.Busy) {
-      return;
-    } else {
-      var isConncet = false;
+  // state = (await AsyncValue.guard(() async {
 
-      var connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult == ConnectivityResult.mobile) {
-        isConncet = true;
-      } else if (connectivityResult == ConnectivityResult.wifi) {
-        isConncet = true;
-      }
-      if (isConncet) {
-        setState(ViewState.Busy);
-        await AccountApiServices.loginCustomer(saveCustomerCommand.mailAddress, saveCustomerCommand.password).then((response) {
-          if (response.statusCode == 200) {
-            Map userMap = jsonDecode(response.body);
-            var userLogin = CustomerResponse.fromJson(userMap);
-            SharedManager().custmerDetail = userLogin;
-            setState(ViewState.Idle);
-            navigator.navigateToRemove(Pages.Home);
+  // )) as AuthState;
+  //}
 
-            ProductCommentApiServices.getCustomerProductCommentByCustomerId(userLogin.id.toString()).then((response) {
-              // if (response.statusCode == 200) {
-              //   Map<String, dynamic> map = jsonDecode(response.body);
-              //   var responseNotice = ResponseNotice.fromJson(map);
-              //   SharedManager().token = userLogin.id;
-              //   userLogin.productComments = new List<ProductComment>();
-              //   userLogin.productComments = responseNotice.notices;
-              //   SharedManager().custmerDetail = userLogin;
-              //   setState(ViewState.Idle);
-              //   navigator.navigateToRemove(Pages.Home);
-              // } else {
-              //   setState(ViewState.Idle);
-              //   SharedManager().token = userLogin.id;
-              //   SharedManager().custmerDetail = userLogin;
-              // }
-              //  });
-            });
-          } else {
-            snackBarWarningMessage('Yanlış E-posta yada Şifre');
-          }
-          //   });
-        });
-      } else {
-        snackBarWarningMessage('Lütfen internet bağlantınızı kontrol ediniz.');
-      }
-    }
+  void login() {
+    state = AuthState.auth;
   }
 
-  // ignore: always_declare_return_types
-  snackBarWarningMessage(String _message) async {
-    setState(ViewState.Idle);
-    await UIHelper.showSnackBar(key: customerSignInScaffoldKey, child: Text(_message ?? ''));
+  void logout() {
+    state = AuthState.anon;
   }
 }
+
+
+
+
+// final customerSignInViewProvider = ChangeNotifierProvider((_) => CustomerSignInViewModel());
+
+
+
+
+
+// class CustomerSignInViewModel extends ChangeNotifier {
+
+
+
+
+
+
+
+
+//   Future<void> loginCustomer(String email, String password) async {
+//     // setState(ViewState.Idle);
+//     // if (state == ViewState.Busy) {
+//     //   return;
+//     // } else {
+
+//     // var isConncet = false;
+
+//     // var connectivityResult = await (Connectivity().checkConnectivity());
+//     // if (connectivityResult == ConnectivityResult.mobile) {
+//     //   isConncet = true;
+//     // } else if (connectivityResult == ConnectivityResult.wifi) {
+//     //   isConncet = true;
+//     // }
+//     // if (isConncet) {
+//     //   //setState(ViewState.Busy);
+//     await AccountApiServices.loginCustomer(email, password).then((response) {
+//       if (response.statusCode == 200) {
+//         Map userMap = jsonDecode(response.body);
+//         var userLogin = CustomerResponse.fromJson(userMap);
+//         SharedManager().setCustmerDetail = userLogin;
+//         //  setState(ViewState.Idle);
+//         // navigator.navigateToRemove(Pages.Home);
+
+//         ProductCommentApiServices.getCustomerProductCommentByCustomerId(userLogin.id.toString()).then((response) {
+//           // if (response.statusCode == 200) {
+//           //   Map<String, dynamic> map = jsonDecode(response.body);
+//           //   var responseNotice = ResponseNotice.fromJson(map);
+//           //   SharedManager().token = userLogin.id;
+//           //   userLogin.productComments = new List<ProductComment>();
+//           //   userLogin.productComments = responseNotice.notices;
+//           //   SharedManager().custmerDetail = userLogin;
+//           //   setState(ViewState.Idle);
+//           //   navigator.navigateToRemove(Pages.Home);
+//           // } else {
+//           //   setState(ViewState.Idle);
+//           //   SharedManager().token = userLogin.id;
+//           //   SharedManager().custmerDetail = userLogin;
+//           // }
+//           //  });
+//           notifyListeners();
+//         });
+//       } else {
+//         notifyListeners();
+//         // snackBarWarningMessage(globalKey, 'Yanlış E-posta yada Şifre');
+//       }
+//       //   });
+//     });
+
+//     // } else {
+//     //   // snackBarWarningMessage(globalKey, 'Lütfen internet bağlantınızı kontrol ediniz.');
+//     // }
+//     //}
+//   }
+
+//   // ignore: always_declare_return_types
+//   // snackBarWarningMessage(GlobalKey<ScaffoldState> globalKey, String _message) async {
+//   //   // setState(ViewState.Idle);
+//   //   await UIHelper.showSnackBar(key: globalKey, child: Text(_message));
+//   // }
+// }

@@ -9,9 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class MyProfileInfoViewModel extends BaseModel {
-  final myProfileInfoViewModel = GlobalKey<ScaffoldState>(debugLabel: '_myProfileInfoViewModel');
+  final myProfileInfoViewModelKey = GlobalKey<ScaffoldState>(debugLabel: '_myProfileInfoViewModelKey');
 
-  BuildContext _context;
+  late BuildContext _context;
 
   BuildContext get context => _context;
 
@@ -34,7 +34,7 @@ class MyProfileInfoViewModel extends BaseModel {
     }
     if (isConnect) {
       var updateuser = SharedManager().custmerDetail;
-      updateuser.nameSurname = nameSurname;
+      updateuser!.nameSurname = nameSurname;
       setState(ViewState.Busy);
       // await AccountApiServices.updateUser(updateuser).then((response) {
       //   if (response.statusCode == 204) {
@@ -58,7 +58,7 @@ class MyProfileInfoViewModel extends BaseModel {
 
   // ignore: always_declare_return_types
   snackBarWarningMessage(String _message) {
-    UIHelper.showSnackBar(key: myProfileInfoViewModel, child: Text(_message ?? ''));
+    UIHelper.showSnackBar(key: myProfileInfoViewModelKey, child: Text(_message));
     setState(ViewState.Idle);
   }
 }

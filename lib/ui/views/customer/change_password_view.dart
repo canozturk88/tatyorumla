@@ -2,7 +2,6 @@ import 'package:tadayim_bunu/core/mixin/validation_mixin.dart';
 import 'package:tadayim_bunu/core/viewmodels/change_password_view_model.dart';
 import 'package:tadayim_bunu/ui/shared/view_helper/ui_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../baseview.dart';
 import '../custom_button.dart';
@@ -15,7 +14,7 @@ class ChangePasswordView extends StatefulWidget {
 }
 
 class ChangePasswordState extends State with ValidationMixin {
-  ChangePasswordViewModel _changePasswordViewModel;
+  late ChangePasswordViewModel _changePasswordViewModel;
   final formKey = GlobalKey<FormState>();
 
   String oldPasswordChange = '';
@@ -23,7 +22,8 @@ class ChangePasswordState extends State with ValidationMixin {
   String newPasswordAgain = '';
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance.init(context);
+    //can__
+    // ScreenUtil.instance.init(context);
     return BaseView<ChangePasswordViewModel>(onModelReady: (model) {
       model.setContext(context);
       _changePasswordViewModel = model;
@@ -68,104 +68,104 @@ class ChangePasswordState extends State with ValidationMixin {
             padding: const EdgeInsets.all(15),
             child: Column(
               children: <Widget>[
-                _textFieldOldPassword(UIHelper.oldPassword, true),
-                _textFieldNewPassword(UIHelper.password, true),
-                _textFieldNewPasswordAgain(UIHelper.passwordAgain, true),
+                //  _textFieldOldPassword(UIHelper.oldPassword, true),
+                // _textFieldNewPassword(UIHelper.password, true),
+                // _textFieldNewPasswordAgain(UIHelper.passwordAgain, true),
               ],
             ),
           ),
         ),
       );
 
-  Widget _textFieldNewPassword(String text, bool obscure) => Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-        child: TextFormField(
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.left,
-          obscureText: obscure,
-          autocorrect: false,
-          validator: validatePassword,
-          onSaved: (String value) {
-            newPassword = value;
-          },
-          cursorColor: Colors.white,
-          maxLines: 1,
-          decoration: InputDecoration(
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: IconButton(
-                icon: Icon(Icons.vpn_key),
-                color: Colors.white,
-                onPressed: () {},
-              ),
-            ),
-            hintText: text,
-            hintStyle: TextStyle(color: Colors.white),
-          ),
-        ),
-      );
+  // Widget _textFieldNewPassword(String text, bool obscure) => Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+  //       child: TextFormField(
+  //         style: TextStyle(color: Colors.white),
+  //         textAlign: TextAlign.left,
+  //         obscureText: obscure,
+  //         autocorrect: false,
+  //         validator: validatePassword,
+  //         onSaved: (String value) {
+  //           newPassword = value;
+  //         },
+  //         cursorColor: Colors.white,
+  //         maxLines: 1,
+  //         decoration: InputDecoration(
+  //           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+  //           prefixIcon: Padding(
+  //             padding: const EdgeInsets.only(right: 10.0),
+  //             child: IconButton(
+  //               icon: Icon(Icons.vpn_key),
+  //               color: Colors.white,
+  //               onPressed: () {},
+  //             ),
+  //           ),
+  //           hintText: text,
+  //           hintStyle: TextStyle(color: Colors.white),
+  //         ),
+  //       ),
+  //     );
 
-  Widget _textFieldNewPasswordAgain(String text, bool obscure) => Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-        child: TextFormField(
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.left,
-          obscureText: obscure,
-          autocorrect: false,
-          validator: (val) {
-            if (val.isEmpty) return 'Empty';
-            // if (val != newPassword) return 'Not Match';
-            return null;
-          },
-          onSaved: (String value) {
-            newPasswordAgain = value;
-          },
-          cursorColor: Colors.white,
-          maxLines: 1,
-          decoration: InputDecoration(
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: IconButton(
-                icon: Icon(Icons.vpn_key),
-                color: Colors.white,
-                onPressed: () {},
-              ),
-            ),
-            hintText: text,
-            hintStyle: TextStyle(color: Colors.white),
-          ),
-        ),
-      );
+  // Widget _textFieldNewPasswordAgain(String text, bool obscure) => Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+  //       child: TextFormField(
+  //         style: TextStyle(color: Colors.white),
+  //         textAlign: TextAlign.left,
+  //         obscureText: obscure,
+  //         autocorrect: false,
+  //         validator: (val) {
+  //           if (val.isEmpty) return 'Empty';
+  //           // if (val != newPassword) return 'Not Match';
+  //           return null;
+  //         },
+  //         onSaved: (String value) {
+  //           newPasswordAgain = value;
+  //         },
+  //         cursorColor: Colors.white,
+  //         maxLines: 1,
+  //         decoration: InputDecoration(
+  //           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+  //           prefixIcon: Padding(
+  //             padding: const EdgeInsets.only(right: 10.0),
+  //             child: IconButton(
+  //               icon: Icon(Icons.vpn_key),
+  //               color: Colors.white,
+  //               onPressed: () {},
+  //             ),
+  //           ),
+  //           hintText: text,
+  //           hintStyle: TextStyle(color: Colors.white),
+  //         ),
+  //       ),
+  //     );
 
-  Widget _textFieldOldPassword(String text, bool obscure) => Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-        child: TextFormField(
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.left,
-          obscureText: obscure,
-          autocorrect: false,
-          cursorColor: Colors.white,
-          maxLines: 1,
-          onSaved: (String value) {
-            oldPasswordChange = value;
-          },
-          decoration: InputDecoration(
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: IconButton(
-                icon: Icon(Icons.vpn_key),
-                color: Colors.white,
-                onPressed: () {},
-              ),
-            ),
-            hintText: text,
-            hintStyle: TextStyle(color: Colors.white),
-          ),
-        ),
-      );
+  // Widget _textFieldOldPassword(String text, bool obscure) => Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+  //       child: TextFormField(
+  //         style: TextStyle(color: Colors.white),
+  //         textAlign: TextAlign.left,
+  //         obscureText: obscure,
+  //         autocorrect: false,
+  //         cursorColor: Colors.white,
+  //         maxLines: 1,
+  //         onSaved: (String value) {
+  //           oldPasswordChange = value;
+  //         },
+  //         decoration: InputDecoration(
+  //           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+  //           prefixIcon: Padding(
+  //             padding: const EdgeInsets.only(right: 10.0),
+  //             child: IconButton(
+  //               icon: Icon(Icons.vpn_key),
+  //               color: Colors.white,
+  //               onPressed: () {},
+  //             ),
+  //           ),
+  //           hintText: text,
+  //           hintStyle: TextStyle(color: Colors.white),
+  //         ),
+  //       ),
+  //     );
 
   Widget get _description => Text(UIHelper.changPasswprdExplanation, style: _helloTextStyle(30));
 
@@ -174,8 +174,8 @@ class ChangePasswordState extends State with ValidationMixin {
         child: InkWell(
           borderRadius: loginButtonBorderStyle,
           onTap: () {
-            if (formKey.currentState.validate()) {
-              formKey.currentState.save();
+            if (formKey.currentState!.validate()) {
+              formKey.currentState!.save();
               _changePasswordViewModel.saveNewPassword(oldPasswordChange, newPassword);
             }
           },

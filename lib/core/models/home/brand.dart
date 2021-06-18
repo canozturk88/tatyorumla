@@ -1,9 +1,7 @@
-import 'package:networking/networking/serializable_object.dart';
-
-class BrandResponseModel implements SerializableObject<BrandResponseModel> {
-  int responseCode;
-  String responseDescription;
-  List<Brand> brands;
+class BrandResponseModel {
+  int? responseCode;
+  String? responseDescription;
+  List<Brand>? brands;
 
   BrandResponseModel({this.responseCode, this.responseDescription, this.brands});
 
@@ -13,33 +11,31 @@ class BrandResponseModel implements SerializableObject<BrandResponseModel> {
     if (json['Brands'] != null) {
       brands = <Brand>[];
       json['Brands'].forEach((v) {
-        brands.add(Brand.fromJson(v));
+        brands!.add(Brand.fromJson(v));
       });
     }
   }
 
-  @override
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['ResponseCode'] = responseCode;
     data['ResponseDescription'] = responseDescription;
     if (brands != null) {
-      data['Brands'] = brands.map((v) => v.toJson(v)).toList();
+      data['Brands'] = brands!.map((v) => v.toJson(v)).toList();
     }
     return data;
   }
 
-  @override
   BrandResponseModel fromJson(Map<String, dynamic> json) {
     return BrandResponseModel.fromJson(json);
   }
 }
 
 class Brand {
-  String id;
-  String brandName;
-  String brandPoint;
-  String subCategory;
+  String? id;
+  String? brandName;
+  String? brandPoint;
+  String? subCategory;
 
   Brand({
     this.id,

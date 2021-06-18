@@ -9,11 +9,11 @@ import 'package:flutter/material.dart';
 class ProductSearchViewModel extends BaseModel {
   final noticeScaffoldKey = GlobalKey<ScaffoldState>(debugLabel: '_productSearcViewModel');
 
-  BuildContext _context;
+  late BuildContext _context;
   final SharedManager _sharedManager = SharedManager();
   BuildContext get context => _context;
 
-  List<Product> products;
+  List<Product>? products;
 
   ProductSearchViewModel() {
     getProductData(0);
@@ -33,7 +33,7 @@ class ProductSearchViewModel extends BaseModel {
 
   void getProductData(int page) {
     products = <Product>[];
-    products = _sharedManager.productResponseModel.products;
+    products = _sharedManager.productResponseModel!.products;
 
     // var product = Product();
     // product.bannerImageUrl = '1607580523214';

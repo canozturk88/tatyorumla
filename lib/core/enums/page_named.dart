@@ -17,5 +17,6 @@ enum Pages {
   MyAccount,
   ProductDetail,
   CommentatorProfile,
+  likeDetail,
   FilterPage
 }

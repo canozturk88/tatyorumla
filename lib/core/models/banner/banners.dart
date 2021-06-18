@@ -1,24 +1,24 @@
-import 'package:networking/networking/serializable_object.dart';
+class Banners {
+  String? id;
+  String? title;
+  String? description;
+  String? subDescription;
+  String? detail;
+  String? bannerImageUrl;
+  String? fullImageUrl;
+  String? startDate;
+  String? endDate;
+  String? targetUrl;
+  int? targetType;
+  int? targetTypeId;
+  bool? isAnyCampaignCode;
+  bool? isSentCampaignCode;
+  String? lastParticipationDate;
+  String? remainingDayCounter;
+  String? itemTitle;
+  String? point;
 
-class Banners extends SerializableObject<Banners> {
-  String id;
-  String title;
-  String description;
-  String subDescription;
-  String detail;
-  String bannerImageUrl;
-  String fullImageUrl;
-  String startDate;
-  String endDate;
-  String targetUrl;
-  int targetType;
-  int targetTypeId;
-  bool isAnyCampaignCode;
-  bool isSentCampaignCode;
-  String lastParticipationDate;
-  String remainingDayCounter;
-  String itemTitle;
-  String point;
+  // Banners(){};
 
   Banners(
       {this.id,
@@ -37,7 +37,8 @@ class Banners extends SerializableObject<Banners> {
       this.isSentCampaignCode,
       this.lastParticipationDate,
       this.remainingDayCounter,
-      this.itemTitle});
+      this.itemTitle,
+      this.point});
 
   Banners.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
@@ -60,7 +61,6 @@ class Banners extends SerializableObject<Banners> {
     point = json['Point'];
   }
 
-  @override
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['Id'] = id;
@@ -84,7 +84,6 @@ class Banners extends SerializableObject<Banners> {
     return data;
   }
 
-  @override
   Banners fromJson(Map<String, dynamic> json) {
     return Banners.fromJson(json);
   }

@@ -6,12 +6,12 @@ String postToJsonUser(SaveCustomerCommand data) {
 }
 
 class SaveCustomerCommand {
-  String nameSurname;
-  String mailAddress;
-  String password;
-  DateTime createdDate;
-  int userStatus;
-  String userToken;
+  String? nameSurname;
+  String? mailAddress;
+  String? password;
+  DateTime? createdDate;
+  int? userStatus;
+  String? userToken;
 
   SaveCustomerCommand(this.nameSurname, this.mailAddress, this.password);
 
@@ -31,7 +31,7 @@ class SaveCustomerCommand {
     // }
   }
 
-  SaveCustomerCommand.withId(this.mailAddress);
+  SaveCustomerCommand.withId(this.nameSurname, this.mailAddress, this.password, this.createdDate, this.userStatus, this.userToken);
 
   Map<String, dynamic> toJson(SaveCustomerCommand customer) {
     final data = <String, dynamic>{};

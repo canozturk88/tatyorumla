@@ -13,28 +13,27 @@ import 'package:tadayim_bunu/core/viewmodels/base_model.dart';
 import 'package:tadayim_bunu/core/viewmodels/main_view_model.dart';
 
 class FilterPageViewModel extends BaseModel {
-  BuildContext _context;
+  late BuildContext _context;
 
   BuildContext get context => _context;
 
   int currentPosition = 0;
   int bannerListSize = 0;
   SharedManager sharedManager = SharedManager();
-  PageController bannerPageController;
-  String commentCount;
+  PageController? bannerPageController;
+  String? commentCount;
   //HomeRequestModel _homeRequestModel;
 
   // List<Notice> customerNotice = null;
   //ApiServices apiService;
-  int currentBannerPosition = 0;
 
-  HomeData homeData;
-  List<Banners> banners;
+  HomeData? homeData;
+  List<Banners>? banners;
 
-  List<MainCategory> _mainCategories;
-  List<SubCategory> _subCategory;
-  List<Brand> _brand;
-  List<Product> _product;
+  List<MainCategory>? _mainCategories;
+  List<SubCategory>? _subCategory;
+  List<Brand>? _brand;
+  List<Product>? _product;
 
   bool pointVisibility = false;
 
@@ -61,7 +60,7 @@ class FilterPageViewModel extends BaseModel {
 
   // ignore: always_declare_return_types
   clickBanner(int bannerIndex) async {
-    var clickedBanner = banners[bannerIndex];
+    var clickedBanner = banners![bannerIndex];
     var _product = Product();
     _product.bannerImageUrl = clickedBanner.bannerImageUrl;
     _product.id = clickedBanner.id;
@@ -85,17 +84,6 @@ class FilterPageViewModel extends BaseModel {
   Future openLeftDrawer() async => MainViewModel.openLeftMenu();
 
   Future<void> updateHomeDataPoint() async => notifyListeners();
-
-  // ignore: always_declare_return_types
-  changeBanner(int currentBanner) async {
-    if (currentBanner > 4) {
-      currentBannerPosition = 4;
-    } else {
-      currentBannerPosition = currentBanner;
-    }
-
-    notifyListeners();
-  }
 
   Future getHomeData() async {
     try {
@@ -130,10 +118,10 @@ class FilterPageViewModel extends BaseModel {
       // _mainCategories.add(mainCategory3);
       // _mainCategories.add(mainCategory4);
 
-      _mainCategories = SharedManager().mainCategoryResponseModel.mainCategories;
-      _subCategory = SharedManager().subCategoryResponseModel.subCategories;
-      _brand = SharedManager().brandResponseModel.brands;
-      _product = SharedManager().productResponseModel.products;
+      _mainCategories = SharedManager().mainCategoryResponseModel!.mainCategories;
+      _subCategory = SharedManager().subCategoryResponseModel!.subCategories;
+      _brand = SharedManager().brandResponseModel!.brands;
+      _product = SharedManager().productResponseModel!.products;
       // var subCategory = SubCategory();
       // subCategory.id = '1';
       // subCategory.title = 'Et, Balik & Tavuk';
@@ -294,8 +282,8 @@ class FilterPageViewModel extends BaseModel {
       banner1.itemTitle = 'Ulker Cikolata';
       banner1.point = '7,8';
 
-      banners.add(banner);
-      banners.add(banner);
+      banners!.add(banner);
+      banners!.add(banner);
 
       setData();
     } catch (e) {
@@ -311,11 +299,11 @@ class FilterPageViewModel extends BaseModel {
   // ignore: always_declare_return_types
   setData() async {
     homeData = HomeData();
-    homeData.mainCategory = _mainCategories;
-    homeData.subcategory = _subCategory;
-    homeData.brand = _brand;
-    homeData.product = _product;
-    homeData.banners = banners;
+    homeData!.mainCategory = _mainCategories;
+    homeData!.subcategory = _subCategory;
+    homeData!.brand = _brand;
+    homeData!.product = _product;
+    homeData!.banners = banners;
   }
 
   @override

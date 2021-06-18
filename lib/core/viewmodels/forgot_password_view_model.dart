@@ -11,7 +11,7 @@ import 'base_model.dart';
 class ForgotPasswordViewModel extends BaseModel {
   final forgotPasswordViewModel = GlobalKey<ScaffoldState>(debugLabel: '_forgotPasswordViewModel');
 
-  BuildContext _context;
+  late BuildContext _context;
 
   BuildContext get context => _context;
 
@@ -48,7 +48,7 @@ class ForgotPasswordViewModel extends BaseModel {
   }
 
   // ignore: always_declare_return_types
-  snackBarWarningMessage(String _message) async {
+  snackBarWarningMessage(String? _message) async {
     await UIHelper.showSnackBar(key: forgotPasswordViewModel, child: Text(_message ?? ''));
     setState(ViewState.Idle);
     await navigator.navigateToRemove(Pages.SignIn);

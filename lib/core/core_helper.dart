@@ -1,14 +1,10 @@
-// import 'dart:io';
-// import 'dart:math';
+import 'dart:ui';
 
-// import 'package:aytemiz_mobile/core/utils/constants.dart';
-// import 'package:firebase_analytics/firebase_analytics.dart';
-// import 'package:flutter/material.dart';
-// import 'package:google_maps_flutter/google_maps_flutter.dart';
-// import 'package:intl/intl.dart';
-// import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-// class CoreHelper {
+class CoreHelper {
 //   static final validCharacters = RegExp(r'^[a-zA-Z]+$');
 
 //   static const String kGoogleApiKey = "AIzaSyDS2f8wvdKE1V2f3PLzxtnnG40HNGJp004";
@@ -127,7 +123,55 @@
 //       throw 'Could not launch $url';
 //     }
 //   }
+  static String parseDateData(String dateData) {
+    var formater = DateFormat('yyy-MM-dd hh:mm');
+    return formater.format(DateTime.parse(dateData));
+  }
 
+  static Duration timeBetween(DateTime from, DateTime to) {
+    from = DateTime(from.year, from.month, from.day);
+    to = DateTime(to.year, to.month, to.day);
+    var diff = (to.difference(from));
+    return diff;
+    //return (to.difference(from).inHours / 24).round();
+  }
+
+  // static int mounthBetween(DateTime from, DateTime to) {
+  //   from = DateTime(from.year, from.month, from.day);
+  //   to = DateTime(to.year, to.month, to.day);
+  //   var asd = (to.difference(from));
+  //   return (to.difference(from).inHours / 24).round();
+  // }
+
+  static String calculatepassedTime(String dateData) {
+    final createdDate = DateTime.parse(dateData);
+    final dateNow = DateTime.now();
+
+    final difference = timeBetween(createdDate, dateNow);
+
+    if (difference.inSeconds < 60) {
+      return difference.inSeconds.toString() + ' sn';
+    } else if (difference.inMinutes < 60) {
+      return difference.inMinutes.toString() + ' dk';
+    } else if (difference.inHours < 24) {
+      return difference.inHours.toString() + ' sa';
+    } else if (difference.inDays < 8) {
+      return difference.inDays.toString() + ' gün';
+    } else {
+      return (difference.inDays / 7).round().toString() + ' h';
+    }
+
+    // var formater = DateFormat('yyy-MM-dd hh:mm');
+    // return formater.format(DateTime.parse(dateData));
+  }
+
+  static Color getColor(status) {
+    if (status) {
+      return Colors.red;
+    } else {
+      return CupertinoColors.systemGrey;
+    }
+  }
 //   static launchSocial(String _url) async {
 //     String url = _url;
 //     if (await canLaunch(url)) {
@@ -201,4 +245,4 @@
 
 //     print("AnalyticsLOGGG: $screen");
 //   }
-// }
+}

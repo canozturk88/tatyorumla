@@ -6,6 +6,7 @@ import 'package:tadayim_bunu/core/viewmodels/product_search_view_model.dart';
 import 'core/viewmodels/add_comment_view_model.dart';
 import 'core/viewmodels/change_mail_address_view_model.dart';
 import 'core/viewmodels/change_password_view_model.dart';
+import 'core/viewmodels/commet_like_view_model.dart';
 import 'core/viewmodels/customer_login_view_model.dart';
 import 'core/viewmodels/customer_profile_view_model.dart';
 import 'core/viewmodels/forgot_password_view_model.dart';
@@ -13,13 +14,12 @@ import 'core/viewmodels/home_view_model.dart';
 import 'core/viewmodels/my_profile_info_view_model.dart';
 import 'core/viewmodels/product_comment_view_model.dart';
 import 'core/viewmodels/product_detail_view_model.dart';
-
 import 'core/services/navigation_api.dart';
 import 'core/viewmodels/badge_menu_view_model.dart';
+import 'core/viewmodels/splash_view_model.dart';
 import 'core/viewmodels/write_comment_view_models.dart';
 import 'core/viewmodels/left_drawer_view_model.dart';
 import 'core/viewmodels/main_view_model.dart';
-import 'core/viewmodels/splash_model.dart';
 
 GetIt locator = GetIt.instance;
 
@@ -44,4 +44,5 @@ void initLocator() {
   locator.registerFactory(() => AddCommentViewModel());
   locator.registerFactory(() => CommentatorProfileViewModel());
   locator.registerFactory(() => FilterPageViewModel());
+  locator.registerFactory(() => CommetLikeViewViewModel());
 }

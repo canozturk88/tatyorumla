@@ -1,63 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:rating_bar/rating_bar.dart';
-import 'package:tadayim_bunu/core/models/user/save_customer_command.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tadayim_bunu/core/viewmodels/commentator_profile_view_model.dart';
 import '../../shared/styles/colors.dart';
 import '../../shared/view_helper/ui_helper.dart';
 import '../custom_button.dart';
-import '../baseview.dart';
 
-class CommentatorProfileView extends StatefulWidget {
-  final String customerId;
-
+class CommentatorProfileView extends ConsumerWidget {
+  final String? customerId;
+  final formKey = GlobalKey<FormBuilderState>();
   CommentatorProfileView(this.customerId);
-  @override
-  State<StatefulWidget> createState() => CommentatorProfileViewState(customerId);
-}
 
-class CommentatorProfileViewState extends State {
-  String customerId;
-  CommentatorProfileViewModel commentatorProfileViewModel;
-  CommentatorProfileViewState(this.customerId);
-  final formKey = GlobalKey<FormState>();
-  final custmer = SaveCustomerCommand('', '', '');
   @override
-  Widget build(BuildContext context) {
-    return BaseView<CommentatorProfileViewModel>(
-      onModelReady: (model) {
-        model.setContext(context);
-        commentatorProfileViewModel = model;
-      },
-      builder: (context, model, child) {
-        return Scaffold(
-          appBar: AppBar(
-            backgroundColor: mainColor,
-            elevation: 0.0,
+  Widget build(BuildContext context, ScopedReader watch) {
+    final commentatorProfileViewModel = watch(commentatorProfileViewProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: mainColor,
+        elevation: 0.0,
+      ),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              _topProfile,
+              _middleProfile,
+              SizedBox(height: 10),
+              followProfile,
+              SizedBox(height: 30),
+              bottomProfile,
+              SizedBox(height: 30),
+              bottomProfileLast,
+              //  customerComment()
+            ],
           ),
-          backgroundColor: Colors.white,
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  _topProfile,
-                  _middleProfile,
-                  SizedBox(height: 10),
-                  followProfile,
-                  SizedBox(height: 30),
-                  bottomProfile,
-                  SizedBox(height: 30),
-                  bottomProfileLast,
-                  customerComment()
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -218,7 +201,7 @@ class CommentatorProfileViewState extends State {
                   children: [
                     InkWell(
                         onTap: () {
-                          setState(() {});
+                          // setState(() {});
                         },
                         child: Container(
                           margin: EdgeInsets.all(2.0),
@@ -251,7 +234,7 @@ class CommentatorProfileViewState extends State {
                   children: [
                     InkWell(
                         onTap: () {
-                          setState(() {});
+                          //  setState(() {});
                         },
                         child: Container(
                           margin: EdgeInsets.all(2.0),
@@ -290,7 +273,7 @@ class CommentatorProfileViewState extends State {
                   children: [
                     InkWell(
                         onTap: () {
-                          setState(() {});
+                          // setState(() {});
                         },
                         child: Container(
                           margin: EdgeInsets.all(2.0),
@@ -323,7 +306,7 @@ class CommentatorProfileViewState extends State {
                   children: [
                     InkWell(
                         onTap: () {
-                          setState(() {});
+                          // setState(() {});
                         },
                         child: Container(
                           margin: EdgeInsets.all(2.0),
@@ -358,8 +341,8 @@ class CommentatorProfileViewState extends State {
           child: InkWell(
             borderRadius: commentatorProfileBorderStyle,
             onTap: () {
-              if (formKey.currentState.validate()) {
-                formKey.currentState.save();
+              if (formKey.currentState!.validate()) {
+                formKey.currentState!.save();
 
                 // var productComment = ProductComment();
                 // productComment.pricePerformance = _pricePerformance.toInt();
@@ -398,8 +381,8 @@ class CommentatorProfileViewState extends State {
           child: InkWell(
             borderRadius: commentatorProfileBorderStyle,
             onTap: () {
-              if (formKey.currentState.validate()) {
-                formKey.currentState.save();
+              if (formKey.currentState!.validate()) {
+                formKey.currentState!.save();
 
                 // var productComment = ProductComment();
                 // productComment.pricePerformance = _pricePerformance.toInt();
@@ -438,8 +421,8 @@ class CommentatorProfileViewState extends State {
           child: InkWell(
             borderRadius: commentatorProfileBorderStyle,
             onTap: () {
-              if (formKey.currentState.validate()) {
-                formKey.currentState.save();
+              if (formKey.currentState!.validate()) {
+                formKey.currentState!.save();
 
                 // var productComment = ProductComment();
                 // productComment.pricePerformance = _pricePerformance.toInt();
@@ -478,8 +461,8 @@ class CommentatorProfileViewState extends State {
           child: InkWell(
             borderRadius: commentatorProfileBorderStyle,
             onTap: () {
-              if (formKey.currentState.validate()) {
-                formKey.currentState.save();
+              if (formKey.currentState!.validate()) {
+                formKey.currentState!.save();
 
                 // var productComment = ProductComment();
                 // productComment.pricePerformance = _pricePerformance.toInt();
@@ -511,274 +494,275 @@ class CommentatorProfileViewState extends State {
         ),
       );
 
-  Row customerComment() {
-    return Row(children: <Widget>[
-      Expanded(
-          child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: commentatorProfileViewModel.productComments == null ? 0 : commentatorProfileViewModel.productComments.length,
-              padding: EdgeInsets.all(2.0),
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
-                  width: double.maxFinite,
-                  child: Card(
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 10,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
-                                child: InkWell(
-                                  onTap: () async {
-                                    // await commentatorProfileViewModel.gotoProductDetail(commentatorProfileViewModel.productComments[index].product);
-                                  },
-                                  child: RichText(
-                                    text: TextSpan(
-                                        style: TextStyle(color: mainColor, fontSize: 15.0, fontWeight: FontWeight.bold),
-                                        children: [TextSpan(text: commentatorProfileViewModel.productComments[index].productName)]),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 10,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
-                                child: RichText(
-                                  text: TextSpan(
-                                      style: TextStyle(color: mainColor, fontSize: 14.0),
-                                      children: [TextSpan(text: commentatorProfileViewModel.productComments[index].title)]),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 5),
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 10,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
-                                child: RichText(
-                                  text: TextSpan(
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 12.0,
-                                      ),
-                                      children: [TextSpan(text: commentatorProfileViewModel.productComments[index].comment)]),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 5,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
-                                child: RichText(
-                                  text: TextSpan(style: TextStyle(color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.bold), children: [
-                                    TextSpan(
-                                        text: 'FİYAT / PERFORMANS: ' + commentatorProfileViewModel.productComments[index].pricePerformance.toString())
-                                  ]),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 5,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 5, 5, 0),
-                                child: RatingBar.readOnly(
-                                  initialRating: double.parse(commentatorProfileViewModel.productComments[index].pricePerformance.toString()),
-                                  isHalfAllowed: true,
-                                  halfFilledIcon: Icons.star_half,
-                                  filledIcon: Icons.star,
-                                  emptyIcon: Icons.star_border,
-                                  size: 24,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
-                                  child: CircularPercentIndicator(
-                                    radius: 50.0,
-                                    lineWidth: 7.0,
-                                    percent: double.parse(((commentatorProfileViewModel.productComments[index].tastePoint / 10) * 2).toString()),
-                                    header: Text('Lezzet'),
-                                    center: Icon(
-                                      Icons.food_bank,
-                                      size: 20.0,
-                                      color: Colors.blue,
-                                    ),
-                                    backgroundColor: Colors.grey,
-                                    progressColor: Colors.blue,
-                                  )),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(0, 10, 10, 5),
-                                  child: CircularPercentIndicator(
-                                    radius: 50.0,
-                                    lineWidth: 7.0,
-                                    percent: double.parse(((commentatorProfileViewModel.productComments[index].pricePoint / 10) * 2).toString()),
-                                    header: Text('Fiyat '),
-                                    center: Icon(
-                                      Icons.money,
-                                      size: 20.0,
-                                      color: Colors.blue,
-                                    ),
-                                    backgroundColor: Colors.grey,
-                                    progressColor: Colors.blue,
-                                  )),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 10, 10, 5),
-                                child: CircularPercentIndicator(
-                                  radius: 50.0,
-                                  lineWidth: 7.0,
-                                  percent: double.parse(((commentatorProfileViewModel.productComments[index].packingPoint / 10) * 2).toString()),
-                                  header: Text('Ambalaj'),
-                                  center: Icon(
-                                    Icons.ac_unit,
-                                    size: 20.0,
-                                    color: Colors.blue,
-                                  ),
-                                  backgroundColor: Colors.grey,
-                                  progressColor: Colors.blue,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 10, 10, 5),
-                                child: CircularPercentIndicator(
-                                  radius: 50.0,
-                                  lineWidth: 7.0,
-                                  percent: double.parse(((commentatorProfileViewModel.productComments[index].accessPoint / 10) * 2).toString()),
-                                  header: Text('Erisim'),
-                                  center: Icon(
-                                    Icons.find_in_page,
-                                    size: 20.0,
-                                    color: Colors.blue,
-                                  ),
-                                  backgroundColor: Colors.grey,
-                                  progressColor: Colors.blue,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 40, 10, 0),
-                                child: InkWell(
-                                  onTap: () {
-                                    //  productCommentViewModel.addNewCommentNavigate(productCommentViewModel.productComments[index]);
-                                  },
-                                  child: Text(
-                                    'Yorumla',
-                                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey, fontSize: 14.0),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 6,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 20, 10, 0),
-                                child: RichText(
-                                  text: TextSpan(style: TextStyle(color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.bold), children: [
-                                    TextSpan(
-                                        text:
-                                            'Bu yorum faydalı mı? ' + commentatorProfileViewModel.productComments[index].pricePerformance.toString())
-                                  ]),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 5, 5, 0),
-                                child: IconButton(
-                                  icon: Icon(Icons.arrow_circle_up_rounded),
-                                  color: Colors.grey,
-                                  onPressed: () {},
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 20, 5, 0),
-                                child: Text(
-                                  '45',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: UIHelper.dynamicSp(50),
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 5, 5, 0),
-                                child: IconButton(
-                                  icon: Icon(Icons.arrow_circle_down_rounded),
-                                  color: Colors.grey,
-                                  onPressed: () {},
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 20, 5, 0),
-                                child: Text(
-                                  '45',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: UIHelper.dynamicSp(50),
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }))
-    ]);
-  }
+  // Row customerComment() {
+  //   return Row(children: <Widget>[
+  //     Expanded(
+  //         child: ListView.builder(
+  //             shrinkWrap: true,
+  //             itemCount: commentatorProfileViewModel.productComments == null ? 0 : commentatorProfileViewModel.productComments.length,
+  //             padding: EdgeInsets.all(2.0),
+  //             itemBuilder: (BuildContext context, int index) {
+  //               return Container(
+  //                 padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
+  //                 width: double.maxFinite,
+  //                 child: Card(
+  //                   child: Column(
+  //                     children: <Widget>[
+  //                       Row(
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         children: [
+  //                           Expanded(
+  //                             flex: 10,
+  //                             child: Padding(
+  //                               padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+  //                               child: InkWell(
+  //                                 onTap: () async {
+  //                                   // await commentatorProfileViewModel.gotoProductDetail(commentatorProfileViewModel.productComments[index].product);
+  //                                 },
+  //                                 child: RichText(
+  //                                   text: TextSpan(
+  //                                       style: TextStyle(color: mainColor, fontSize: 15.0, fontWeight: FontWeight.bold),
+  //                                       children: [TextSpan(text: commentatorProfileViewModel.productComments[index].productName)]),
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                       // Row(
+  //                       //   crossAxisAlignment: CrossAxisAlignment.start,
+  //                       //   children: [
+  //                       //     Expanded(
+  //                       //       flex: 10,
+  //                       //       child: Padding(
+  //                       //         padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+  //                       //         child: RichText(
+  //                       //           text: TextSpan(
+  //                       //               style: TextStyle(color: mainColor, fontSize: 14.0),
+  //                       //               children: [TextSpan(text: commentatorProfileViewModel.productComments[index].title)]),
+  //                       //         ),
+  //                       //       ),
+  //                       //     ),
+  //                       //   ],
+  //                       // ),
+  //                       SizedBox(height: 5),
+  //                       Row(
+  //                         children: [
+  //                           Expanded(
+  //                             flex: 10,
+  //                             child: Padding(
+  //                               padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+  //                               child: RichText(
+  //                                 text: TextSpan(
+  //                                     style: TextStyle(
+  //                                       color: Colors.grey,
+  //                                       fontSize: 12.0,
+  //                                     ),
+  //                                     children: [TextSpan(text: commentatorProfileViewModel.productComments[index].comment)]),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                       Row(
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         children: [
+  //                           Expanded(
+  //                             flex: 5,
+  //                             child: Padding(
+  //                               padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+  //                               child: RichText(
+  //                                 text: TextSpan(style: TextStyle(color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.bold), children: [
+  //                                   TextSpan(
+  //                                       text: 'FİYAT / PERFORMANS: ' + commentatorProfileViewModel.productComments[index].pricePerformance.toString())
+  //                                 ]),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           Expanded(
+  //                             flex: 5,
+  //                             child: Padding(
+  //                               padding: const EdgeInsets.fromLTRB(5, 5, 5, 0),
+  //                               child: RatingBar.readOnly(
+  //                                 initialRating: double.parse(commentatorProfileViewModel.productComments[index].pricePerformance.toString()),
+  //                                 isHalfAllowed: true,
+  //                                 halfFilledIcon: Icons.star_half,
+  //                                 filledIcon: Icons.star,
+  //                                 emptyIcon: Icons.star_border,
+  //                                 size: 24,
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                       Row(
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         children: [
+  //                           Expanded(
+  //                             flex: 2,
+  //                             child: Padding(
+  //                                 padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
+  //                                 child: CircularPercentIndicator(
+  //                                   radius: 50.0,
+  //                                   lineWidth: 7.0,
+  //                                   percent: double.parse(((commentatorProfileViewModel.productComments![index].tastePoint! / 10) * 2).toString()),
+  //                                   header: Text('Lezzet'),
+  //                                   center: Icon(
+  //                                     Icons.food_bank,
+  //                                     size: 20.0,
+  //                                     color: Colors.blue,
+  //                                   ),
+  //                                   backgroundColor: Colors.grey,
+  //                                   progressColor: Colors.blue,
+  //                                 )),
+  //                           ),
+  //                           Expanded(
+  //                             flex: 2,
+  //                             child: Padding(
+  //                                 padding: const EdgeInsets.fromLTRB(0, 10, 10, 5),
+  //                                 child: CircularPercentIndicator(
+  //                                   radius: 50.0,
+  //                                   lineWidth: 7.0,
+  //                                   percent: double.parse(((commentatorProfileViewModel.productComments![index].pricePoint! / 10) * 2).toString()),
+  //                                   header: Text('Fiyat '),
+  //                                   center: Icon(
+  //                                     Icons.money,
+  //                                     size: 20.0,
+  //                                     color: Colors.blue,
+  //                                   ),
+  //                                   backgroundColor: Colors.grey,
+  //                                   progressColor: Colors.blue,
+  //                                 )),
+  //                           ),
+  //                           Expanded(
+  //                             flex: 2,
+  //                             child: Padding(
+  //                               padding: const EdgeInsets.fromLTRB(0, 10, 10, 5),
+  //                               child: CircularPercentIndicator(
+  //                                 radius: 50.0,
+  //                                 lineWidth: 7.0,
+  //                                 percent: double.parse(((commentatorProfileViewModel.productComments![index].packingPoint! / 10) * 2).toString()),
+  //                                 header: Text('Ambalaj'),
+  //                                 center: Icon(
+  //                                   Icons.ac_unit,
+  //                                   size: 20.0,
+  //                                   color: Colors.blue,
+  //                                 ),
+  //                                 backgroundColor: Colors.grey,
+  //                                 progressColor: Colors.blue,
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           Expanded(
+  //                             flex: 2,
+  //                             child: Padding(
+  //                               padding: const EdgeInsets.fromLTRB(0, 10, 10, 5),
+  //                               child: CircularPercentIndicator(
+  //                                 radius: 50.0,
+  //                                 lineWidth: 7.0,
+  //                                 percent: double.parse(((commentatorProfileViewModel.productComments![index].accessPoint! / 10) * 2).toString()),
+  //                                 header: Text('Erisim'),
+  //                                 center: Icon(
+  //                                   Icons.find_in_page,
+  //                                   size: 20.0,
+  //                                   color: Colors.blue,
+  //                                 ),
+  //                                 backgroundColor: Colors.grey,
+  //                                 progressColor: Colors.blue,
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           Expanded(
+  //                             flex: 2,
+  //                             child: Padding(
+  //                               padding: const EdgeInsets.fromLTRB(0, 40, 10, 0),
+  //                               child: InkWell(
+  //                                 onTap: () {
+  //                                   //  productCommentViewModel.addNewCommentNavigate(productCommentViewModel.productComments[index]);
+  //                                 },
+  //                                 child: Text(
+  //                                   'Yorumla',
+  //                                   style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey, fontSize: 14.0),
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                       Row(
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         children: [
+  //                           Expanded(
+  //                             flex: 6,
+  //                             child: Padding(
+  //                               padding: const EdgeInsets.fromLTRB(5, 20, 10, 0),
+  //                               child: RichText(
+  //                                 text: TextSpan(style: TextStyle(color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.bold), children: [
+  //                                   TextSpan(
+  //                                       text:
+  //                                           'Bu yorum faydalı mı? ' + commentatorProfileViewModel.productComments[index].pricePerformance.toString())
+  //                                 ]),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           Expanded(
+  //                             flex: 1,
+  //                             child: Padding(
+  //                               padding: const EdgeInsets.fromLTRB(5, 5, 5, 0),
+  //                               child: IconButton(
+  //                                 icon: Icon(Icons.arrow_circle_up_rounded),
+  //                                 color: Colors.grey,
+  //                                 onPressed: () {},
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           Expanded(
+  //                             flex: 1,
+  //                             child: Padding(
+  //                               padding: const EdgeInsets.fromLTRB(5, 20, 5, 0),
+  //                               child: Text(
+  //                                 '45',
+  //                                 style: TextStyle(
+  //                                   color: Colors.black,
+  //                                   fontSize: UIHelper.dynamicSp(50),
+  //                                   fontWeight: FontWeight.w700,
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           Expanded(
+  //                             flex: 1,
+  //                             child: Padding(
+  //                               padding: const EdgeInsets.fromLTRB(5, 5, 5, 0),
+  //                               child: IconButton(
+  //                                 icon: Icon(Icons.arrow_circle_down_rounded),
+  //                                 color: Colors.grey,
+  //                                 onPressed: () {},
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           Expanded(
+  //                             flex: 1,
+  //                             child: Padding(
+  //                               padding: const EdgeInsets.fromLTRB(5, 20, 5, 0),
+  //                               child: Text(
+  //                                 '45',
+  //                                 style: TextStyle(
+  //                                   color: Colors.black,
+  //                                   fontSize: UIHelper.dynamicSp(50),
+  //                                   fontWeight: FontWeight.w700,
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               );
+  //             }))
+  //   ]);
+  // }
+
 }

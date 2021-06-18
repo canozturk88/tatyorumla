@@ -13,15 +13,14 @@ class DotsIndicator extends StatelessWidget {
   final bool reversed;
 
   const DotsIndicator({
-    Key key,
-    @required this.dotsCount,
+    Key? key,
+    required this.dotsCount,
     this.position = 0.0,
     this.decorator = const DotsDecorator(),
     this.axis = Axis.horizontal,
     this.reversed = false,
-  })  : assert(dotsCount != null && dotsCount > 0),
-        assert(position != null && position >= 0),
-        assert(decorator != null),
+  })  : assert(dotsCount > 0),
+        assert(position >= 0),
         assert(
           position < dotsCount,
           'Position must be inferior than dotsCount',
@@ -40,12 +39,12 @@ class DotsIndicator extends StatelessWidget {
     );
 
     return Container(
-      width: size.width,
+      width: size!.width,
       height: size.height,
       margin: decorator.spacing,
       decoration: ShapeDecoration(
         color: color,
-        shape: shape,
+        shape: shape!,
       ),
     );
   }

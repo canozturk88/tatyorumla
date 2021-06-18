@@ -8,12 +8,11 @@ import 'package:tadayim_bunu/core/enums/viewstate.dart';
 import '../enums/page_named.dart';
 import '../models/comment/product_comment.dart';
 import '../models/home/product.dart';
-import '../services/shared_prefernces_api.dart';
 import 'base_model.dart';
 import '../../ui/shared/view_helper/ui_helper.dart';
 
 class ProductDetailViewModel extends BaseModel {
-  BuildContext _context;
+  late BuildContext _context;
 
   BuildContext get context => _context;
 
@@ -26,13 +25,10 @@ class ProductDetailViewModel extends BaseModel {
 
   double frontAppBarHeight = UIHelper.dynamicHeight(500);
 
-  SharedManager _sharedManager;
-
-  Product selectProdcuct = Product();
-  List<ProductComment> productComments;
+  Product? selectProdcuct = Product();
+  List<ProductComment>? productComments;
 
   ProductDetailViewModel() {
-    _sharedManager = SharedManager();
     // getProductComment();
   }
 
@@ -50,7 +46,7 @@ class ProductDetailViewModel extends BaseModel {
       if (response.statusCode == 200) {
         var map = jsonDecode(response.body);
         var responseProductComment = ProductCommentResponseModel.fromJson(map);
-        productComments = responseProductComment.productComments;
+        productComments = responseProductComment.productComments!;
       }
     });
     setState(ViewState.Idle);
@@ -63,20 +59,12 @@ class ProductDetailViewModel extends BaseModel {
     await navigator.navigateTo(Pages.AddNewComment, product);
   }
 
-  // ignore: always_declare_return_types
-  getCode() async {
-    if (_sharedManager.token != null) {
-      notifyListeners();
-    } else {
-      await navigator.navigateTo(Pages.SignIn);
-    }
-  }
-
   @override
   void setContext(BuildContext context) {
     _context = context;
 
-    selectProdcuct = ModalRoute.of(context).settings.arguments;
+//can
+    //selectProdcuct = ModalRoute.of(context).settings.arguments;
     logEvent();
     scrollController.addListener(() {
       if (scrollController.hasClients && scrollController.offset > (frontAppBarHeight - 1)) {

@@ -6,7 +6,7 @@ import 'base_model.dart';
 class CustomerProfileViewModel extends BaseModel {
   final customerProfileViewModel = GlobalKey<ScaffoldState>(debugLabel: '_customerProfileViewModel');
 
-  BuildContext _context;
+  late BuildContext _context;
 
   BuildContext get context => _context;
 

@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rating_bar/rating_bar.dart';
 import 'package:tadayim_bunu/core/models/home/product.dart';
 import 'package:tadayim_bunu/core/viewmodels/filter_page_view_model.dart';
 import '../../../core/models/home/brand.dart';
@@ -12,18 +10,15 @@ import '../../shared/language/language_constants.dart';
 import '../../shared/styles/colors.dart';
 import '../../shared/view_helper/ui_helper.dart';
 import '../baseview.dart';
-import '../../widgets/dots_decarator.dart';
-import '../../widgets/dots_indicator.dart';
-import '../../widgets/header_item_widget.dart';
 import '../custom_button.dart';
 
 // ignore: must_be_immutable
 class FilterPageView extends StatefulWidget {
   // FilterPageViewModel homeViewModel;
 
-  Function goToProductCommentList;
-  Function goToProductList;
-  Function goToDoComment;
+  Function? goToProductCommentList;
+  Function? goToProductList;
+  Function? goToDoComment;
 
   FilterPageView();
 
@@ -32,8 +27,8 @@ class FilterPageView extends StatefulWidget {
 }
 
 class _FilterPageViewState extends State<FilterPageView> {
-  Future _future;
-  FilterPageViewModel filterPageViewModel;
+  late Future _future;
+  late FilterPageViewModel filterPageViewModel;
   bool subcategory = false;
   bool brand = false;
   bool product = false;
@@ -66,7 +61,7 @@ class _FilterPageViewState extends State<FilterPageView> {
                       child: Padding(
                     padding: EdgeInsets.all(UIHelper.dynamicHeight(30)),
                     child: Text(
-                      filterPageViewModel.translate(context, LanguageConstants.of(context).errorText),
+                      'Bir hatayla karşılaşıldı. \n Lütfen internet bağlantınızı kontrol ediniz.',
                       style: TextStyle(fontSize: UIHelper.dynamicScaleSp(44)),
                       textAlign: TextAlign.center,
                     ),
@@ -108,7 +103,7 @@ class _FilterPageViewState extends State<FilterPageView> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: <Widget>[
-                    for (var item in filterPageViewModel.homeData.mainCategory) getMainCategoryImage(item),
+                    for (var item in filterPageViewModel.homeData!.mainCategory!) getMainCategoryImage(item),
                   ],
                 ),
               ),
@@ -130,7 +125,7 @@ class _FilterPageViewState extends State<FilterPageView> {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: <Widget>[
-                      for (var item in filterPageViewModel.homeData.subcategory.where((element) => element.mainCategory == mainCategoryId))
+                      for (var item in filterPageViewModel.homeData!.subcategory!.where((element) => element.mainCategory == mainCategoryId))
                         getsubCategory(item),
                     ],
                   ),
@@ -146,7 +141,7 @@ class _FilterPageViewState extends State<FilterPageView> {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: <Widget>[
-                      for (var item in filterPageViewModel.homeData.brand.where((element) => element.subCategory == subCategoryId)) getBrand(item),
+                      for (var item in filterPageViewModel.homeData!.brand!.where((element) => element.subCategory == subCategoryId)) getBrand(item),
                     ],
                   ),
                 ),
@@ -168,7 +163,7 @@ class _FilterPageViewState extends State<FilterPageView> {
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
                       ),
-                      itemCount: filterPageViewModel.homeData.product.where((element) => element.brand == selectBrandId).toList().length,
+                      itemCount: filterPageViewModel.homeData!.product!.where((element) => element.brand == selectBrandId).toList().length,
                       itemBuilder: (BuildContext ctx, index) {
                         return ClipRRect(
                           borderRadius: BorderRadius.circular(10),
@@ -177,10 +172,10 @@ class _FilterPageViewState extends State<FilterPageView> {
                                 color: Colors.black45,
                                 padding: EdgeInsets.all(10),
                                 child: Text(
-                                    filterPageViewModel.homeData.product
+                                    filterPageViewModel.homeData!.product!
                                         .where((element) => element.brand == selectBrandId)
                                         .toList()[index]
-                                        .productName,
+                                        .productName!,
                                     style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
                               ),
                               child: GestureDetector(
@@ -191,16 +186,16 @@ class _FilterPageViewState extends State<FilterPageView> {
                                   tag: product,
                                   child: FadeInImage(
                                     placeholder: AssetImage('https://api.bildireyimbunu.com/UploadFile/' +
-                                        filterPageViewModel.homeData.product
+                                        filterPageViewModel.homeData!.product!
                                             .where((element) => element.brand == selectBrandId)
                                             .toList()[index]
-                                            .bannerImageUrl +
+                                            .bannerImageUrl! +
                                         '.jpg'),
                                     image: NetworkImage('https://api.bildireyimbunu.com/UploadFile/' +
-                                        filterPageViewModel.homeData.product
+                                        filterPageViewModel.homeData!.product!
                                             .where((element) => element.brand == selectBrandId)
                                             .toList()[index]
-                                            .bannerImageUrl +
+                                            .bannerImageUrl! +
                                         '.jpg'),
                                     fit: BoxFit.cover,
                                   ),
@@ -215,7 +210,7 @@ class _FilterPageViewState extends State<FilterPageView> {
                                       Expanded(
                                         flex: 5,
                                         child: Text(
-                                          filterPageViewModel.homeData.product
+                                          filterPageViewModel.homeData!.product!
                                                   .where((element) => element.brand == selectBrandId)
                                                   .toList()[index]
                                                   .commentCount
@@ -228,27 +223,28 @@ class _FilterPageViewState extends State<FilterPageView> {
                                         flex: 5,
                                         child: Padding(
                                           padding: const EdgeInsets.fromLTRB(2, 2, 2, 0),
-                                          child: RatingBar.readOnly(
-                                            initialRating: double.parse(filterPageViewModel.homeData.product
-                                                .where((element) => element.brand == selectBrandId)
-                                                .toList()[index]
-                                                .pricePerformance),
-                                            isHalfAllowed: true,
-                                            halfFilledIcon: Icons.star_half,
-                                            filledIcon: Icons.star,
-                                            emptyIcon: Icons.star_border,
-                                            size: 14,
-                                            filledColor: Colors.yellow.shade900,
-                                          ),
+                                          //can
+                                          // child: RatingBar.readOnly(
+                                          //   initialRating: double.parse(filterPageViewModel.homeData.product!
+                                          //       .where((element) => element.brand == selectBrandId)
+                                          //       .toList()[index]
+                                          //       .pricePerformance!),
+                                          //   isHalfAllowed: true,
+                                          //   halfFilledIcon: Icons.star_half,
+                                          //   filledIcon: Icons.star,
+                                          //   emptyIcon: Icons.star_border,
+                                          //   size: 14,
+                                          //   filledColor: Colors.yellow.shade900,
                                         ),
                                       ),
+                                      // ),
                                     ],
                                   ),
                                   Row(
                                     children: <Widget>[
                                       Expanded(
                                           flex: 10,
-                                          child: _commentButton(filterPageViewModel.homeData.product
+                                          child: _commentButton(filterPageViewModel.homeData!.product!
                                               .where((element) => element.brand == selectBrandId)
                                               .toList()[index])),
                                     ],
@@ -301,123 +297,123 @@ class _FilterPageViewState extends State<FilterPageView> {
     );
   }
 
-  Widget get _buildBannerContent {
-    return Stack(
-      children: <Widget>[
-        Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Expanded(
-              child: Stack(
-                children: <Widget>[
-                  PageView.builder(
-                      onPageChanged: ((f) {
-                        filterPageViewModel.changeBanner(f);
-                      }),
-                      itemCount: filterPageViewModel.banners == null ? 0 : filterPageViewModel.banners.length,
-                      physics: ClampingScrollPhysics(),
-                      controller: filterPageViewModel.bannerPageController,
-                      itemBuilder: (BuildContext context, int itemIndex) {
-                        return InkWell(
-                            onTap: () {
-                              filterPageViewModel.clickBanner(itemIndex);
-                            },
-                            child: _buildBannerItem(itemIndex));
-                      }),
-                  filterPageViewModel.banners != null && filterPageViewModel.banners.isNotEmpty
-                      ? Padding(
-                          padding: EdgeInsets.symmetric(vertical: UIHelper.dynamicHeight(10)),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                DotsIndicator(
-                                  dotsCount: filterPageViewModel.banners.length,
-                                  position: filterPageViewModel.currentBannerPosition.toDouble(),
-                                  decorator: DotsDecorator(
-                                      spacing: EdgeInsets.all((2)),
-                                      size: Size(UIHelper.dynamicHeight(16), UIHelper.dynamicHeight(16)),
-                                      activeSize: Size(UIHelper.dynamicHeight(24), UIHelper.dynamicHeight(24))),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      : Container(),
-                ],
-              ),
-            ),
-            Container(
-              color: mainColor,
-              height: UIHelper.dynamicHeight(240),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: HeaderItemWidget(
-                      title: 'Yorum Sayısı',
-                      bigSubTitle: filterPageViewModel.commentCount,
-                      smallSubTitle: '',
-                    ),
-                  ),
-                  Expanded(
-                    child: HeaderItemWidget(
-                      title: 'Ürün Sayısı',
-                      bigSubTitle: filterPageViewModel.commentCount,
-                      smallSubTitle: '',
-                    ),
-                  ),
-                  Expanded(
-                    child: HeaderItemWidget(
-                      title: 'Fotoğraf Sayısı',
-                      bigSubTitle: filterPageViewModel.commentCount,
-                      smallSubTitle: '',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            //_buildHeaderContainer,
-          ],
-        )
-      ],
-    );
-  }
+  // Widget get _buildBannerContent {
+  //   return Stack(
+  //     children: <Widget>[
+  //       Column(
+  //         mainAxisAlignment: MainAxisAlignment.end,
+  //         children: <Widget>[
+  //           Expanded(
+  //             child: Stack(
+  //               children: <Widget>[
+  //                 PageView.builder(
+  //                     onPageChanged: ((f) {
+  //                       filterPageViewModel.changeBanner(f);
+  //                     }),
+  //                     itemCount: filterPageViewModel.banners == null ? 0 : filterPageViewModel.banners.length,
+  //                     physics: ClampingScrollPhysics(),
+  //                     controller: filterPageViewModel.bannerPageController,
+  //                     itemBuilder: (BuildContext context, int itemIndex) {
+  //                       return InkWell(
+  //                           onTap: () {
+  //                             filterPageViewModel.clickBanner(itemIndex);
+  //                           },
+  //                           child: _buildBannerItem(itemIndex));
+  //                     }),
+  //                 filterPageViewModel.banners != null && filterPageViewModel.banners.isNotEmpty
+  //                     ? Padding(
+  //                         padding: EdgeInsets.symmetric(vertical: UIHelper.dynamicHeight(10)),
+  //                         child: Align(
+  //                           alignment: Alignment.center,
+  //                           child: Column(
+  //                             crossAxisAlignment: CrossAxisAlignment.center,
+  //                             mainAxisAlignment: MainAxisAlignment.end,
+  //                             children: <Widget>[
+  //                               DotsIndicator(
+  //                                 dotsCount: filterPageViewModel.banners.length,
+  //                                 position: filterPageViewModel.currentBannerPosition.toDouble(),
+  //                                 decorator: DotsDecorator(
+  //                                     spacing: EdgeInsets.all((2)),
+  //                                     size: Size(UIHelper.dynamicHeight(16), UIHelper.dynamicHeight(16)),
+  //                                     activeSize: Size(UIHelper.dynamicHeight(24), UIHelper.dynamicHeight(24))),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       )
+  //                     : Container(),
+  //               ],
+  //             ),
+  //           ),
+  //           Container(
+  //             color: mainColor,
+  //             height: UIHelper.dynamicHeight(240),
+  //             child: Row(
+  //               children: <Widget>[
+  //                 Expanded(
+  //                   child: HeaderItemWidget(
+  //                     title: 'Yorum Sayısı',
+  //                     bigSubTitle: filterPageViewModel.commentCount,
+  //                     smallSubTitle: '',
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                   child: HeaderItemWidget(
+  //                     title: 'Ürün Sayısı',
+  //                     bigSubTitle: filterPageViewModel.commentCount,
+  //                     smallSubTitle: '',
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                   child: HeaderItemWidget(
+  //                     title: 'Fotoğraf Sayısı',
+  //                     bigSubTitle: filterPageViewModel.commentCount,
+  //                     smallSubTitle: '',
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           //_buildHeaderContainer,
+  //         ],
+  //       )
+  //     ],
+  //   );
+  // }
 
-  Widget _buildBannerItem(int itemIndex) {
-    return Hero(
-      tag: filterPageViewModel.banners[itemIndex].id,
-      child: Container(
-        //color: Colors.red,
-        padding: EdgeInsets.only(left: UIHelper.dynamicHeight(45), bottom: UIHelper.dynamicHeight(30)),
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            //image: Image.network(filterPageViewModel.banners[itemIndex].bannerImageUrl ?? "").image,
-            image: CachedNetworkImageProvider(filterPageViewModel.banners[itemIndex].bannerImageUrl ?? ''),
-            fit: BoxFit.fill,
-          ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(bottom: UIHelper.dynamicHeight(30)),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(filterPageViewModel.banners[itemIndex].title ?? '',
-                  style: TextStyle(
-                    color: white,
-                    decoration: TextDecoration.none,
-                    fontSize: UIHelper.dynamicHeight(55),
-                    fontWeight: FontWeight.w900,
-                    fontStyle: FontStyle.normal,
-                  ))
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _buildBannerItem(int itemIndex) {
+  //   return Hero(
+  //     tag: filterPageViewModel.banners[itemIndex].id,
+  //     child: Container(
+  //       //color: Colors.red,
+  //       padding: EdgeInsets.only(left: UIHelper.dynamicHeight(45), bottom: UIHelper.dynamicHeight(30)),
+  //       decoration: BoxDecoration(
+  //         image: DecorationImage(
+  //           //image: Image.network(filterPageViewModel.banners[itemIndex].bannerImageUrl ?? "").image,
+  //           image: CachedNetworkImageProvider(filterPageViewModel.banners[itemIndex].bannerImageUrl ?? ''),
+  //           fit: BoxFit.fill,
+  //         ),
+  //       ),
+  //       child: Padding(
+  //         padding: EdgeInsets.only(bottom: UIHelper.dynamicHeight(30)),
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.end,
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: <Widget>[
+  //             Text(filterPageViewModel.banners[itemIndex].title ?? '',
+  //                 style: TextStyle(
+  //                   color: white,
+  //                   decoration: TextDecoration.none,
+  //                   fontSize: UIHelper.dynamicHeight(55),
+  //                   fontWeight: FontWeight.w900,
+  //                   fontStyle: FontStyle.normal,
+  //                 ))
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   InkWell getMainCategoryImage(MainCategory mainCategory) {
     return InkWell(
@@ -426,7 +422,7 @@ class _FilterPageViewState extends State<FilterPageView> {
             subcategory = true;
             brand = false;
             product = false;
-            mainCategoryId = mainCategory.id;
+            mainCategoryId = mainCategory.id!;
             subCategoryId = '0';
             selectBrandId = '0';
             selectProductId = '0';
@@ -437,7 +433,7 @@ class _FilterPageViewState extends State<FilterPageView> {
           width: UIHelper.dynamicHeight(192),
           decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage('https://api.bildireyimbunu.com/UploadFile/' + mainCategory.bannerImageUrl + '.jpg'),
+                image: NetworkImage('https://api.bildireyimbunu.com/UploadFile/' + mainCategory.bannerImageUrl! + '.jpg'),
                 fit: BoxFit.cover,
               ),
               border: Border.all(
@@ -454,14 +450,14 @@ class _FilterPageViewState extends State<FilterPageView> {
         onTap: () {
           setState(() {
             brand = true;
-            subCategoryId = subCategory.id;
+            subCategoryId = subCategory.id!;
             product = false;
             selectProductId = '0';
           });
         },
         child: Container(
           child: Text(
-            subCategory.subCategoryName,
+            subCategory.subCategoryName!,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0, color: mainColor),
           ),
           margin: EdgeInsets.all(10.0),
@@ -474,12 +470,12 @@ class _FilterPageViewState extends State<FilterPageView> {
           // product = true;
           setState(() {
             product = true;
-            selectBrandId = brand.id;
+            selectBrandId = brand.id!;
           });
         },
         child: Container(
           child: Text(
-            brand.brandName,
+            brand.brandName!,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0, color: mainColor),
           ),
           margin: EdgeInsets.all(10.0),

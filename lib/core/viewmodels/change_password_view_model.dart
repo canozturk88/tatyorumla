@@ -10,10 +10,10 @@ import 'base_model.dart';
 
 //Kullanıcının şifresini değiştirmesi için kullanılan model
 class ChangePasswordViewModel extends BaseModel {
-  BuildContext get context => _context;
+  BuildContext get context => _context!;
   final changePasswordScaffoldKey = GlobalKey<ScaffoldState>();
 
-  BuildContext _context;
+  BuildContext? _context;
 
   ChangePasswordViewModel();
 
@@ -25,7 +25,7 @@ class ChangePasswordViewModel extends BaseModel {
 
   // ignore: missing_return
   void saveNewPassword(String oldPassword, String newPassword) {
-    AccountApiServices.changePassword(SharedManager().custmerDetail.id, oldPassword, newPassword).then((response) {
+    AccountApiServices.changePassword(SharedManager().custmerDetail!.id!, oldPassword, newPassword).then((response) {
       setState(ViewState.Busy);
       if (response.statusCode == 204) {
         // Map userMap = jsonDecode(response.body);
@@ -45,7 +45,7 @@ class ChangePasswordViewModel extends BaseModel {
 
   // ignore: always_declare_return_types
   snackBarWarningMessage(String _message) {
-    UIHelper.showSnackBar(key: changePasswordScaffoldKey, child: Text(_message ?? ''));
+    UIHelper.showSnackBar(key: changePasswordScaffoldKey, child: Text(_message));
     setState(ViewState.Idle);
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tadayim_bunu/core/mixin/validation_mixin.dart';
 import 'package:tadayim_bunu/core/viewmodels/forgot_password_view_model.dart';
 import 'package:tadayim_bunu/ui/shared/styles/colors.dart';
@@ -14,13 +13,14 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class ForgotPasswordState extends State with ValidationMixin {
-  ForgotPasswordViewModel forgotPasswordViewModel;
+  late ForgotPasswordViewModel forgotPasswordViewModel;
   final formKey = GlobalKey<FormState>();
   String mailAddres = '';
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance.init(context);
+    //can__
+    // ScreenUtil.instance.init(context);
     return BaseView<ForgotPasswordViewModel>(onModelReady: (model) {
       model.setContext(context);
       forgotPasswordViewModel = model;
@@ -65,10 +65,10 @@ class ForgotPasswordState extends State with ValidationMixin {
             padding: const EdgeInsets.all(15),
             child: Column(
               children: <Widget>[
-                _textFieldEmail(
-                  UIHelper.email,
-                  false,
-                ),
+                // _textFieldEmail(
+                //   UIHelper.email,
+                //   false,
+                // ),
                 // _textFieldPassword(UIHelper.password, true),
               ],
             ),
@@ -76,34 +76,34 @@ class ForgotPasswordState extends State with ValidationMixin {
         ),
       );
 
-  Widget _textFieldEmail(String text, bool obscure) => Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-        child: TextFormField(
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.left,
-          obscureText: obscure,
-          autocorrect: false,
-          validator: validateEmail,
-          cursorColor: Colors.white,
-          maxLines: 1,
-          onSaved: (String value) {
-            mailAddres = value;
-          },
-          decoration: InputDecoration(
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: IconButton(
-                icon: Icon(Icons.email),
-                color: Colors.white,
-                onPressed: () {},
-              ),
-            ),
-            hintText: text,
-            hintStyle: TextStyle(color: Colors.white),
-          ),
-        ),
-      );
+  // Widget _textFieldEmail(String text, bool obscure) => Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+  //       child: TextFormField(
+  //         style: TextStyle(color: Colors.white),
+  //         textAlign: TextAlign.left,
+  //         obscureText: obscure,
+  //         autocorrect: false,
+  //         validator: validateEmail,
+  //         cursorColor: Colors.white,
+  //         maxLines: 1,
+  //         onSaved: (String value) {
+  //           mailAddres = value;
+  //         },
+  //         decoration: InputDecoration(
+  //           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+  //           prefixIcon: Padding(
+  //             padding: const EdgeInsets.only(right: 10.0),
+  //             child: IconButton(
+  //               icon: Icon(Icons.email),
+  //               color: Colors.white,
+  //               onPressed: () {},
+  //             ),
+  //           ),
+  //           hintText: text,
+  //           hintStyle: TextStyle(color: Colors.white),
+  //         ),
+  //       ),
+  //     );
 
   Widget get _description => Text(UIHelper.forgatPasswordAccount, style: _helloTextStyle(30));
 
@@ -112,8 +112,8 @@ class ForgotPasswordState extends State with ValidationMixin {
         child: InkWell(
           borderRadius: loginButtonBorderStyle,
           onTap: () {
-            if (formKey.currentState.validate()) {
-              formKey.currentState.save();
+            if (formKey.currentState!.validate()) {
+              formKey.currentState!.save();
               goToRenewPassword(mailAddres);
             }
           },

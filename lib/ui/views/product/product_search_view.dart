@@ -5,41 +5,41 @@ import 'package:tadayim_bunu/ui/widgets/badge_menu.dart';
 import '../baseview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rating_bar/rating_bar.dart';
-import 'package:percent_indicator/percent_indicator.dart';
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 
-class ProductSearchView extends StatefulWidget {
+import 'package:percent_indicator/percent_indicator.dart';
+
+class ProductSearchPage extends StatefulWidget {
+  const ProductSearchPage({Key? key}) : super(key: key);
   // ProductSearchView({Key key}) : super(key: key);
   @override
-  State<StatefulWidget> createState() => ProductSearchViewState();
+  State<StatefulWidget> createState() => ProductSearchPageState();
 }
 
-class ProductSearchViewState extends State<ProductSearchView> {
-  ProductSearchViewModel productSearchViewModel;
+class ProductSearchPageState extends State<ProductSearchPage> {
+  late ProductSearchViewModel productSearchViewModel;
 
   String currentText = '';
-  GlobalKey key = GlobalKey<AutoCompleteTextFieldState<ArbitrarySuggestionType>>();
+  // GlobalKey key = GlobalKey<AutoCompleteTextFieldState<ArbitrarySuggestionType>>();
 
-  ProductSearchViewState() {
-    textField = AutoCompleteTextField<ArbitrarySuggestionType>(
-      textChanged: (text) {
-        currentText = text;
-      },
-      decoration:
-          InputDecoration(hintText: 'Marka & Ürün Ara...', suffixIcon: IconButton(icon: Icon(Icons.cancel), onPressed: () => textField.clear())),
-      itemSubmitted: (item) => setState(() => selected = item),
-      key: key,
-      suggestions: suggestions,
-      itemBuilder: (context, suggestion) =>
-          Padding(child: ListTile(title: Text(suggestion.name), trailing: Text('Stars: ${suggestion.stars}')), padding: EdgeInsets.all(8.0)),
-      itemSorter: (a, b) => a.stars == b.stars
-          ? 0
-          : a.stars > b.stars
-              ? -1
-              : 1,
-      itemFilter: (suggestion, input) => suggestion.name.toLowerCase().startsWith(input.toLowerCase()),
-    );
+  ProductSearchPageState() {
+    // textField = AutoCompleteTextField<ArbitrarySuggestionType>(
+    //   textChanged: (text) {
+    //     currentText = text;
+    //   },
+    //   decoration:
+    //       InputDecoration(hintText: 'Marka & Ürün Ara...', suffixIcon: IconButton(icon: Icon(Icons.cancel), onPressed: () => textField.clear())),
+    //   itemSubmitted: (item) => setState(() => selected = item),
+    //   key: key,
+    //   suggestions: suggestions,
+    //   itemBuilder: (context, suggestion) =>
+    //       Padding(child: ListTile(title: Text(suggestion.name), trailing: Text('Stars: ${suggestion.stars}')), padding: EdgeInsets.all(8.0)),
+    //   itemSorter: (a, b) => a.stars == b.stars
+    //       ? 0
+    //       : a.stars > b.stars
+    //           ? -1
+    //           : 1,
+    //   itemFilter: (suggestion, input) => suggestion.name.toLowerCase().startsWith(input.toLowerCase()),
+    // );
   }
 
   List<ArbitrarySuggestionType> suggestions = [
@@ -62,9 +62,11 @@ class ProductSearchViewState extends State<ProductSearchView> {
     ArbitrarySuggestionType(4.2, 'MoVida', 'https://media-cdn.tripadvisor.com/media/photo-s/0e/1f/55/79/and-here-we-go.jpg')
   ];
 
-  AutoCompleteTextField<ArbitrarySuggestionType> textField;
+  get selected => null;
 
-  ArbitrarySuggestionType selected;
+  //AutoCompleteTextField<ArbitrarySuggestionType> textField;
+
+  //ArbitrarySuggestionType selected;
 
   @override
   Widget build(BuildContext context) {
@@ -78,24 +80,24 @@ class ProductSearchViewState extends State<ProductSearchView> {
           body: NestedScrollView(
             headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
-                SliverAppBar(
-                  leading: BadgeMenuView(
-                    onPress: () {
-                      productSearchViewModel.openLeftDrawer();
-                    },
-                  ),
-                  expandedHeight: UIHelper.dynamicHeight(150),
-                  floating: true,
-                  pinned: true,
-                  centerTitle: true,
-                  title: Container(
-                    padding: EdgeInsets.all(10),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: Text('Urunler'),
-                    ),
-                  ),
-                ),
+                // SliverAppBar(
+                //   leading: BadgeMenuView(
+                //     onPress: () {
+                //       productSearchViewModel.openLeftDrawer();
+                //     },
+                //   ),
+                //   expandedHeight: UIHelper.dynamicHeight(150),
+                //   floating: true,
+                //   pinned: true,
+                //   centerTitle: true,
+                //   title: Container(
+                //     padding: EdgeInsets.all(10),
+                //     child: Padding(
+                //       padding: const EdgeInsets.only(left: 8),
+                //       child: Text('Urunler'),
+                //     ),
+                //   ),
+                // ),
               ];
             },
             body: mainContent(),
@@ -162,7 +164,7 @@ class ProductSearchViewState extends State<ProductSearchView> {
           Column(
             children: <Widget>[
               Column(children: [
-                Padding(child: Container(child: textField), padding: EdgeInsets.all(10.0)),
+                // Padding(child: Container(child: textField), padding: EdgeInsets.all(10.0)),
                 // Padding(
                 //     padding: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 0.0),
                 //     child: Card(
@@ -181,11 +183,11 @@ class ProductSearchViewState extends State<ProductSearchView> {
                     flex: 5,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         onPressed: () {
                           _showPickerShort();
                         },
-                        color: Colors.grey[200],
+                        // color: Colors.grey[200],
                         child: Padding(
                           padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
                           child: Row(
@@ -213,13 +215,13 @@ class ProductSearchViewState extends State<ProductSearchView> {
                     flex: 5,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         onPressed: () async {
                           await productSearchViewModel.gotoFilterPage();
                           // await navigator.navigateTo(Pages.FilterPage);
                           // _showPickerFilter();
                         },
-                        color: Colors.grey[200],
+                        //color: Colors.grey[200],
                         child: Padding(
                           padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
                           child: Row(
@@ -254,7 +256,7 @@ class ProductSearchViewState extends State<ProductSearchView> {
               child: Expanded(
             child: selected == null
                 ? ListView.builder(
-                    itemCount: productSearchViewModel.products == null ? 0 : productSearchViewModel.products.length,
+                    itemCount: productSearchViewModel.products == null ? 0 : productSearchViewModel.products!.length,
                     padding: EdgeInsets.all(2.0),
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
@@ -272,12 +274,12 @@ class ProductSearchViewState extends State<ProductSearchView> {
                                       padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
                                       child: InkWell(
                                         onTap: () async {
-                                          await productSearchViewModel.gotoProductDetail(productSearchViewModel.products[index].productName);
+                                          await productSearchViewModel.gotoProductDetail(productSearchViewModel.products![index].productName ?? '');
                                         },
                                         child: RichText(
                                           text: TextSpan(
                                               style: TextStyle(color: mainColor, fontSize: 15.0, fontWeight: FontWeight.bold),
-                                              children: [TextSpan(text: productSearchViewModel.products[index].productName)]),
+                                              children: [TextSpan(text: productSearchViewModel.products![index].productName)]),
                                         ),
                                       ),
                                     ),
@@ -288,7 +290,7 @@ class ProductSearchViewState extends State<ProductSearchView> {
                                       padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
                                       child: InkWell(
                                         onTap: () async {
-                                          await productSearchViewModel.gotoProductDetail(productSearchViewModel.products[index].productName);
+                                          await productSearchViewModel.gotoProductDetail(productSearchViewModel.products![index].productName!);
                                         },
                                         child: Text(
                                           'Yorumlar',
@@ -308,7 +310,7 @@ class ProductSearchViewState extends State<ProductSearchView> {
                                       padding: const EdgeInsets.fromLTRB(5, 10, 10, 0),
                                       child: RichText(
                                         text: TextSpan(style: TextStyle(color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.bold), children: [
-                                          TextSpan(text: 'FİYAT / PERFORMANS: ' + productSearchViewModel.products[index].pricePerformance.toString())
+                                          TextSpan(text: 'FİYAT / PERFORMANS: ' + productSearchViewModel.products![index].pricePerformance.toString())
                                         ]),
                                       ),
                                     ),
@@ -317,14 +319,15 @@ class ProductSearchViewState extends State<ProductSearchView> {
                                     flex: 5,
                                     child: Padding(
                                       padding: const EdgeInsets.fromLTRB(5, 5, 5, 0),
-                                      child: RatingBar.readOnly(
-                                        initialRating: double.parse(productSearchViewModel.products[index].pricePerformance),
-                                        isHalfAllowed: true,
-                                        halfFilledIcon: Icons.star_half,
-                                        filledIcon: Icons.star,
-                                        emptyIcon: Icons.star_border,
-                                        size: 24,
-                                      ),
+                                      //can
+                                      // child: RatingBar(
+                                      //   initialRating: double.parse(productSearchViewModel.products![index].pricePerformance!),
+                                      //   isHalfAllowed: true,
+                                      //   halfFilledIcon: Icons.star_half,
+                                      //   filledIcon: Icons.star,
+                                      //   emptyIcon: Icons.star_border,
+                                      //   size: 24,
+                                      // ),
                                     ),
                                   ),
                                 ],
@@ -339,7 +342,7 @@ class ProductSearchViewState extends State<ProductSearchView> {
                                         child: CircularPercentIndicator(
                                           radius: 40.0,
                                           lineWidth: 3.0,
-                                          percent: double.parse(productSearchViewModel.products[index].tastePoint),
+                                          percent: double.parse(productSearchViewModel.products![index].tastePoint!),
                                           header: Text('Lezzet'),
                                           center: Icon(
                                             Icons.food_bank,
@@ -357,7 +360,7 @@ class ProductSearchViewState extends State<ProductSearchView> {
                                         child: CircularPercentIndicator(
                                           radius: 40.0,
                                           lineWidth: 3.0,
-                                          percent: double.parse(productSearchViewModel.products[index].pricePoint),
+                                          percent: double.parse(productSearchViewModel.products![index].pricePoint!),
                                           header: Text('Fiyat '),
                                           center: Icon(
                                             Icons.money,
@@ -375,7 +378,7 @@ class ProductSearchViewState extends State<ProductSearchView> {
                                       child: CircularPercentIndicator(
                                         radius: 40.0,
                                         lineWidth: 3.0,
-                                        percent: double.parse(productSearchViewModel.products[index].packinPoint),
+                                        percent: double.parse(productSearchViewModel.products![index].packinPoint!),
                                         header: Text('Ambalaj'),
                                         center: Icon(
                                           Icons.ac_unit,
@@ -394,7 +397,7 @@ class ProductSearchViewState extends State<ProductSearchView> {
                                       child: CircularPercentIndicator(
                                         radius: 40.0,
                                         lineWidth: 3.0,
-                                        percent: double.parse(productSearchViewModel.products[index].accessPoint),
+                                        percent: double.parse(productSearchViewModel.products![index].accessPoint!),
                                         header: Text('Erisim'),
                                         center: Icon(
                                           Icons.find_in_page,
@@ -413,7 +416,7 @@ class ProductSearchViewState extends State<ProductSearchView> {
                                       child: InkWell(
                                         onTap: () {
                                           productSearchViewModel.addNewCommentNavigate(
-                                              productSearchViewModel.products[index].id, productSearchViewModel.products[index].productName);
+                                              productSearchViewModel.products![index].id!, productSearchViewModel.products![index].productName!);
                                         },
                                         child: Text(
                                           'Yorumla',
